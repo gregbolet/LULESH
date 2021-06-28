@@ -2059,7 +2059,7 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
                           Index_t length, Index_t *regElemList)
 {
 #ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcPressureForElems");
+    //CALI_MARK_BEGIN("CalcPressureForElems");
 #endif
 #pragma omp parallel for firstprivate(length)
    for (Index_t i = 0; i < length ; ++i) {
@@ -2084,7 +2084,7 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
          p_new[i]   = pmin ;
    }
 #ifdef USE_CALIPER
-    CALI_MARK_END("CalcPressureForElems");
+    //CALI_MARK_END("CalcPressureForElems");
 #endif
 }
 
@@ -2117,8 +2117,14 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
       }
    }
 
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcPressureForElems1");
+#endif
    CalcPressureForElems(pHalfStep, bvc, pbvc, e_new, compHalfStep, vnewc,
                         pmin, p_cut, eosvmax, length, regElemList);
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcPressureForElems1");
+#endif
 
 #pragma omp parallel for firstprivate(length, rho0)
    for (Index_t i = 0 ; i < length ; ++i) {
@@ -2158,8 +2164,14 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
       }
    }
 
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcPressureForElems2");
+#endif
    CalcPressureForElems(p_new, bvc, pbvc, e_new, compression, vnewc,
                         pmin, p_cut, eosvmax, length, regElemList);
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcPressureForElems2");
+#endif
 
 #pragma omp parallel for firstprivate(length, rho0, emin, e_cut)
    for (Index_t i = 0 ; i < length ; ++i){
@@ -2195,8 +2207,14 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
       }
    }
 
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcPressureForElems3");
+#endif
    CalcPressureForElems(p_new, bvc, pbvc, e_new, compression, vnewc,
                         pmin, p_cut, eosvmax, length, regElemList);
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcPressureForElems3");
+#endif
 
 #pragma omp parallel for firstprivate(length, rho0, q_cut)
    for (Index_t i = 0 ; i < length ; ++i){
