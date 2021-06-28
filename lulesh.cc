@@ -159,8 +159,15 @@ Additional BSD Notice
 # include <omp.h>
 #endif
 
-#ifdef APOLLO
-    #include "apollo/Apollo.h"
+#ifdef USE_APOLLO
+   #include "apollo/Apollo.h"
+#endif
+
+#ifdef USE_CALIPER
+   #include "caliper/cali.h"
+   cali_id_t thread_id_attr    = CALI_INV_ID;
+   cali_id_t num_threads_attr  = CALI_INV_ID;
+   cali_id_t problem_size_attr = CALI_INV_ID;
 #endif
 
 #include "lulesh.h"
@@ -2653,6 +2660,10 @@ void LagrangeLeapFrog(Domain& domain)
 
 int main(int argc, char *argv[])
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("main-region");
+#endif
+
    Domain *locDom ;
    int numRanks ;
    int myRank ;
@@ -2790,6 +2801,10 @@ int main(int argc, char *argv[])
 
 #if USE_MPI
    MPI_Finalize() ;
+#endif
+
+#ifdef USE_CALIPER
+    CALI_MARK_END("main-region");
 #endif
 
    return 0 ;

@@ -7,9 +7,32 @@ option(WITH_SILO   "Build LULESH with silo support" FALSE)
 
 option(WITH_OPENMP "Build LULESH with OpenMP"       TRUE)
 option(WITH_APOLLO "Build LULESH with Apollo"       TRUE)
+option(WITH_CALIPER "Build LULESH with Caliper"       FALSE)
+
+if (WITH_CALIPER)
+
+    find_path(CALIPER_INCLUDE_DIR caliper/cali.h
+      HINTS ${CALIPER_DIR}/include)
+
+    find_library(CALIPER_LIBRARY
+      NAMES caliper
+      HINTS ${CALIPER_DIR}/lib64)
+
+    include(FindPackageHandleStandardArgs)
+    find_package_handle_standard_args(CALIPER DEFAULT_MSG
+      CALIPER_LIBRARY
+      CALIPER_INCLUDE_DIR)
+
+    if (CALIPER_FOUND)
+      add_definitions(-DUSE_CALIPER)
+      include_directories(${CALIPER_INCLUDE_DIR})
+
+      list(APPEND LULESH_EXTERNAL_LIBS ${CALIPER_LIBRARY})
+    endif()
+endif()
 
 if (WITH_APOLLO)
-    add_definitions(-DAPOLLO)
+    add_definitions(-DUSE_APOLLO)
 
     # Need to use -std=c++11 flag to build with Apollo
     set(CMAKE_CXX_STANDARD 11)
