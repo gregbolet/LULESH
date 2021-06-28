@@ -1,0 +1,3 @@
+/g/g15/bolet1/workspace/lulesh/build/CMakeFiles/rebuild_cache.dir
+/g/g15/bolet1/workspace/lulesh/build/CMakeFiles/edit_cache.dir
+/g/g15/bolet1/workspace/lulesh/build/CMakeFiles/lulesh2.0.dir
