@@ -18,7 +18,7 @@ if (WITH_APOLLO)
     # Supply the Apollo library path
     if(APOLLO_DIR)
         message(STATUS "Given APOLLO_DIR!")
-        include_directories(${APOLLO_DIR}/include ${PAPI_DIR}/build/src)
+        include_directories(${APOLLO_DIR}/include ${APOLLO_DIR}/build/src)
         add_library(apollo SHARED IMPORTED)
     endif()
 endif()
