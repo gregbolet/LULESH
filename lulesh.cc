@@ -177,6 +177,10 @@ Additional BSD Notice
 static inline
 void TimeIncrement(Domain& domain)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("TimeIncrement");
+#endif
+
    Real_t targetdt = domain.stoptime() - domain.time() ;
 
    if ((domain.dtfixed() <= Real_t(0.0)) && (domain.cycle() != Int_t(0))) {
@@ -230,6 +234,10 @@ void TimeIncrement(Domain& domain)
    domain.time() += domain.deltatime() ;
 
    ++domain.cycle() ;
+
+#ifdef USE_CALIPER
+    CALI_MARK_END("TimeIncrement");
+#endif
 }
 
 /******************************************/
@@ -1234,6 +1242,10 @@ void CalcPositionForNodes(Domain &domain, const Real_t dt, Index_t numNode)
 static inline
 void LagrangeNodal(Domain& domain)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("LagrangeNodal");
+#endif
+
 #ifdef SEDOV_SYNC_POS_VEL_EARLY
    Domain_member fieldData[6] ;
 #endif
@@ -1276,6 +1288,9 @@ void LagrangeNodal(Domain& domain)
 #endif
 #endif
    
+#ifdef USE_CALIPER
+    CALI_MARK_END("LagrangeNodal");
+#endif
   return;
 }
 
@@ -1583,6 +1598,9 @@ void CalcKinematicsForElems( Domain &domain,
 static inline
 void CalcLagrangeElements(Domain& domain)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcLagrangeElements");
+#endif
    Index_t numElem = domain.numElem() ;
    if (numElem > 0) {
       const Real_t deltatime = domain.deltatime() ;
@@ -1617,6 +1635,9 @@ void CalcLagrangeElements(Domain& domain)
       }
       domain.DeallocateStrains();
    }
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcLagrangeElements");
+#endif
 }
 
 /******************************************/
@@ -1956,6 +1977,9 @@ void CalcMonotonicQForElems(Domain& domain)
 static inline
 void CalcQForElems(Domain& domain)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcQForElems");
+#endif
    //
    // MONOTONIC Q option
    //
@@ -2018,6 +2042,10 @@ void CalcQForElems(Domain& domain)
 #endif
       }
    }
+
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcQForElems");
+#endif
 }
 
 /******************************************/
@@ -2339,6 +2367,9 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
 static inline
 void ApplyMaterialPropertiesForElems(Domain& domain)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("ApplyMaterialPropertiesForElems");
+#endif
    Index_t numElem = domain.numElem() ;
 
   if (numElem != 0) {
@@ -2414,6 +2445,9 @@ void ApplyMaterialPropertiesForElems(Domain& domain)
 
     Release(&vnewc) ;
   }
+#ifdef USE_CALIPER
+    CALI_MARK_END("ApplyMaterialPropertiesForElems");
+#endif
 }
 
 /******************************************/
@@ -2422,6 +2456,9 @@ static inline
 void UpdateVolumesForElems(Domain &domain,
                            Real_t v_cut, Index_t length)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("UpdateVolumesForElems");
+#endif
    if (length != 0) {
 #pragma omp parallel for firstprivate(length, v_cut)
       for(Index_t i=0 ; i<length ; ++i) {
@@ -2434,6 +2471,9 @@ void UpdateVolumesForElems(Domain &domain,
       }
    }
 
+#ifdef USE_CALIPER
+    CALI_MARK_END("UpdateVolumesForElems");
+#endif
    return ;
 }
 
@@ -2442,6 +2482,10 @@ void UpdateVolumesForElems(Domain &domain,
 static inline
 void LagrangeElements(Domain& domain, Index_t numElem)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("LagrangeElements");
+#endif
+
   CalcLagrangeElements(domain) ;
 
   /* Calculate Q.  (Monotonic q option requires communication) */
@@ -2451,6 +2495,10 @@ void LagrangeElements(Domain& domain, Index_t numElem)
 
   UpdateVolumesForElems(domain, 
                         domain.v_cut(), numElem) ;
+
+#ifdef USE_CALIPER
+    CALI_MARK_END("LagrangeElements");
+#endif
 }
 
 /******************************************/
@@ -2587,6 +2635,9 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
 static inline
 void CalcTimeConstraintsForElems(Domain& domain) {
 
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcTimeConstraintsForElems");
+#endif
    // Initialize conditions to a very large value
    domain.dtcourant() = 1.0e+20;
    domain.dthydro() = 1.0e+20;
@@ -2604,6 +2655,9 @@ void CalcTimeConstraintsForElems(Domain& domain) {
                                   domain.dvovmax(),
                                   domain.dthydro()) ;
    }
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcTimeConstraintsForElems");
+#endif
 }
 
 /******************************************/
@@ -2611,6 +2665,10 @@ void CalcTimeConstraintsForElems(Domain& domain) {
 static inline
 void LagrangeLeapFrog(Domain& domain)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("LagrangeLeapFrog");
+#endif
+
 #ifdef SEDOV_SYNC_POS_VEL_LATE
    Domain_member fieldData[6] ;
 #endif
@@ -2653,6 +2711,10 @@ void LagrangeLeapFrog(Domain& domain)
    CommSyncPosVel(domain) ;
 #endif
 #endif   
+
+#ifdef USE_CALIPER
+    CALI_MARK_END("LagrangeLeapFrog");
+#endif
 }
 
 
