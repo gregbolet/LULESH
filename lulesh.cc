@@ -2058,6 +2058,9 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
                           Real_t p_cut, Real_t eosvmax,
                           Index_t length, Index_t *regElemList)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcPressureForElems");
+#endif
 #pragma omp parallel for firstprivate(length)
    for (Index_t i = 0; i < length ; ++i) {
       Real_t c1s = Real_t(2.0)/Real_t(3.0) ;
@@ -2080,6 +2083,9 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
       if    (p_new[i]       <  pmin)
          p_new[i]   = pmin ;
    }
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcPressureForElems");
+#endif
 }
 
 /******************************************/
@@ -2096,6 +2102,9 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
                         Real_t eosvmax,
                         Index_t length, Index_t *regElemList)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcEnergyForElems");
+#endif
    Real_t *pHalfStep = Allocate<Real_t>(length) ;
 
 #pragma omp parallel for firstprivate(length, emin)
@@ -2211,6 +2220,9 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
 
    Release(&pHalfStep) ;
 
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcEnergyForElems");
+#endif
    return ;
 }
 
@@ -2223,6 +2235,9 @@ void CalcSoundSpeedForElems(Domain &domain,
                             Real_t *bvc, Real_t ss4o3,
                             Index_t len, Index_t *regElemList)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcSoundSpeedForElems");
+#endif
 #pragma omp parallel for firstprivate(rho0, ss4o3)
    for (Index_t i = 0; i < len ; ++i) {
       Index_t ielem = regElemList[i];
@@ -2236,6 +2251,9 @@ void CalcSoundSpeedForElems(Domain &domain,
       }
       domain.ss(ielem) = ssTmp ;
    }
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcSoundSpeedForElems");
+#endif
 }
 
 /******************************************/
@@ -2244,6 +2262,9 @@ static inline
 void EvalEOSForElems(Domain& domain, Real_t *vnewc,
                      Int_t numElemReg, Index_t *regElemList, Int_t rep)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("EvalEOSForElems");
+#endif
    Real_t  e_cut = domain.e_cut() ;
    Real_t  p_cut = domain.p_cut() ;
    Real_t  ss4o3 = domain.ss4o3() ;
@@ -2360,6 +2381,10 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
    Release(&p_old) ;
    Release(&delvc) ;
    Release(&e_old) ;
+
+#ifdef USE_CALIPER
+    CALI_MARK_END("EvalEOSForElems");
+#endif
 }
 
 /******************************************/
@@ -2445,6 +2470,7 @@ void ApplyMaterialPropertiesForElems(Domain& domain)
 
     Release(&vnewc) ;
   }
+
 #ifdef USE_CALIPER
     CALI_MARK_END("ApplyMaterialPropertiesForElems");
 #endif
