@@ -14,6 +14,9 @@
 # EXTERNAL cache entries
 ########################
 
+//No help, variable specified on the command line.
+APOLLO_DIR:UNINITIALIZED=/g/g15/bolet1/workspace/apollo/
+
 //Path to a program.
 CMAKE_AR:FILEPATH=/usr/bin/ar
 
@@ -192,11 +195,14 @@ OpenMP_gomp_LIBRARY:FILEPATH=/usr/tce/packages/gcc/gcc-4.9.3/lib64/libgomp.so
 //Path to the pthread library for OpenMP
 OpenMP_pthread_LIBRARY:FILEPATH=/lib64/libpthread.so
 
+//Build LULESH with Apollo
+WITH_APOLLO:BOOL=On
+
 //Build LULESH with MPI
 WITH_MPI:BOOL=Off
 
 //Build LULESH with OpenMP
-WITH_OPENMP:BOOL=ON
+WITH_OPENMP:BOOL=On
 
 //Build LULESH with silo support
 WITH_SILO:BOOL=OFF
@@ -330,9 +336,9 @@ CMAKE_UNAME:INTERNAL=/usr/bin/uname
 //ADVANCED property for variable: CMAKE_VERBOSE_MAKEFILE
 CMAKE_VERBOSE_MAKEFILE-ADVANCED:INTERNAL=1
 //Details about finding OpenMP
-FIND_PACKAGE_MESSAGE_DETAILS_OpenMP:INTERNAL=[TRUE][c ][v()]
+FIND_PACKAGE_MESSAGE_DETAILS_OpenMP:INTERNAL=[TRUE][c ][v4.0()]
 //Details about finding OpenMP_CXX
-FIND_PACKAGE_MESSAGE_DETAILS_OpenMP_CXX:INTERNAL=[-fopenmp][/usr/tce/packages/gcc/gcc-4.9.3/lib64/libgomp.so][/lib64/libpthread.so][v()]
+FIND_PACKAGE_MESSAGE_DETAILS_OpenMP_CXX:INTERNAL=[-fopenmp][/usr/tce/packages/gcc/gcc-4.9.3/lib64/libgomp.so][/lib64/libpthread.so][v4.0()]
 //Result of TRY_COMPILE
 OpenMP_COMPILE_RESULT_CXX_fopenmp:INTERNAL=TRUE
 //ADVANCED property for variable: OpenMP_CXX_FLAGS

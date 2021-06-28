@@ -1,0 +1,14 @@
+# Ignore everything
+*
+
+# Keep c/c++ files
+!*.c
+!*.cc
+!*.cpp
+!*.hpp
+!*.h
+!Makefile
+!README
+!*.sh
+!*.txt
+!.gitignore

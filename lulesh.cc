@@ -159,6 +159,10 @@ Additional BSD Notice
 # include <omp.h>
 #endif
 
+#ifdef APOLLO
+    #include "apollo/Apollo.h"
+#endif
+
 #include "lulesh.h"
 
 /* Work Routines */

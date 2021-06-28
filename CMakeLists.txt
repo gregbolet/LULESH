@@ -3,8 +3,25 @@ cmake_minimum_required(VERSION 3.0)
 project(LULESH CXX)
 
 option(WITH_MPI    "Build LULESH with MPI"          TRUE)
-option(WITH_OPENMP "Build LULESH with OpenMP"       TRUE)
 option(WITH_SILO   "Build LULESH with silo support" FALSE)
+
+option(WITH_OPENMP "Build LULESH with OpenMP"       TRUE)
+option(WITH_APOLLO "Build LULESH with Apollo"       TRUE)
+
+if (WITH_APOLLO)
+    add_definitions(-DAPOLLO)
+
+    # Need to use -std=c++11 flag to build with Apollo
+    set(CMAKE_CXX_STANDARD 11)
+    set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+    # Supply the Apollo library path
+    if(APOLLO_DIR)
+        message(STATUS "Given APOLLO_DIR!")
+        include_directories(${APOLLO_DIR}/include ${PAPI_DIR}/build/src)
+        add_library(apollo SHARED IMPORTED)
+    endif()
+endif()
 
 if (WITH_MPI)
   find_package(MPI REQUIRED)

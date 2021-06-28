@@ -14,11 +14,14 @@ set(CMAKE_CXX_COMPILER_ID "GNU")
 
 # Preprocessor definitions for this target.
 set(CMAKE_TARGET_DEFINITIONS_CXX
+  "APOLLO"
   "USE_MPI=0"
   )
 
 # The include file search paths:
 set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "/g/g15/bolet1/workspace/apollo/include"
+  "/build/src"
   )
 
 # Targets to which this target links.

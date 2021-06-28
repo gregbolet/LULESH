@@ -13,6 +13,8 @@ CMakeFiles/lulesh2.0.dir/lulesh-util.cc.o: ../lulesh.h
 CMakeFiles/lulesh2.0.dir/lulesh-viz.cc.o: ../lulesh-viz.cc
 CMakeFiles/lulesh2.0.dir/lulesh-viz.cc.o: ../lulesh.h
 
+CMakeFiles/lulesh2.0.dir/lulesh.cc.o: /g/g15/bolet1/workspace/apollo/include/apollo/Apollo.h
+CMakeFiles/lulesh2.0.dir/lulesh.cc.o: /g/g15/bolet1/workspace/apollo/include/apollo/Config.h
 CMakeFiles/lulesh2.0.dir/lulesh.cc.o: ../lulesh.cc
 CMakeFiles/lulesh2.0.dir/lulesh.cc.o: ../lulesh.h
 
