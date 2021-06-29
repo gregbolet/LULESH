@@ -32,18 +32,29 @@ if (WITH_CALIPER)
 endif()
 
 if (WITH_APOLLO)
-    add_definitions(-DUSE_APOLLO)
-
     # Need to use -std=c++11 flag to build with Apollo
     set(CMAKE_CXX_STANDARD 11)
     set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-    # Supply the Apollo library path
-    if(APOLLO_DIR)
-        message(STATUS "Given APOLLO_DIR!")
-        include_directories(${APOLLO_DIR}/include ${APOLLO_DIR}/build/src)
-        add_library(apollo SHARED IMPORTED)
+    find_path(APOLLO_INCLUDE_DIR apollo/Apollo.h
+      HINTS ${APOLLO_DIR}/include)
+
+    find_library(APOLLO_LIBRARY
+      NAMES apollo
+      HINTS ${APOLLO_DIR}/build/src)
+
+    include(FindPackageHandleStandardArgs)
+    find_package_handle_standard_args(APOLLO DEFAULT_MSG
+      APOLLO_LIBRARY
+      APOLLO_INCLUDE_DIR)
+
+    if (APOLLO_FOUND)
+      add_definitions(-DUSE_APOLLO)
+      include_directories(${APOLLO_INCLUDE_DIR})
+
+      list(APPEND LULESH_EXTERNAL_LIBS ${APOLLO_LIBRARY})
     endif()
+
 endif()
 
 if (WITH_MPI)

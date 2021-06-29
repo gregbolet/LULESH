@@ -161,6 +161,7 @@ Additional BSD Notice
 
 #ifdef USE_APOLLO
    #include "apollo/Apollo.h"
+   #include "apollo/Region.h"
 #endif
 
 #ifdef USE_CALIPER
@@ -2936,10 +2937,15 @@ void LagrangeLeapFrog(Domain& domain)
 
 int main(int argc, char *argv[])
 {
+#ifdef USE_APOLLO
+    Apollo *apollo = Apollo::instance();
+#endif
+
 #ifdef USE_CALIPER
    cali_config_set("CALI_CALIPER_ATTRIBUTE_DEFAULT_SCOPE", "thread");
    CALI_MARK_BEGIN("main-region");
 #endif
+
 
    Domain *locDom ;
    int numRanks ;
