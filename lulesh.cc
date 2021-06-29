@@ -169,6 +169,26 @@ Additional BSD Notice
 
    Apollo* apollo;
    Apollo::Region *r;
+
+static inline
+void setNumThreads(int policy){
+   int num_threads;
+
+   switch(policy){
+      case 0: num_threads = 1; break;
+      case 1: num_threads = 2; break;
+      case 2: num_threads = 4; break;
+      case 3: num_threads = 8; break;
+      case 4: num_threads = 16; break;
+      case 5: num_threads = 32; break;
+      case 6: num_threads = 36; break;
+      default: num_threads = 1;
+   }
+
+   // Set the thread count according to policy
+   omp_set_num_threads(num_threads);
+}
+
 #endif
 
 #ifdef USE_CALIPER
@@ -1101,28 +1121,17 @@ void CalcHourglassControlForElems(Domain& domain,
    Real_t *z8n  = Allocate<Real_t>(numElem8) ;
 
 #ifdef USE_APOLLO
-   // Start the Apollo region
-   ::r->begin();
-
-   // Set the feature to track
-   ::r->setFeature(float(numElem));
-
-   int num_threads, policy = ::r->getPolicyIndex();
-   //printf("Feature %d Policy %d\n", feature, policy);
-
-   switch(policy){
-      case 0: num_threads = 1; break;
-      case 1: num_threads = 2; break;
-      case 2: num_threads = 4; break;
-      case 3: num_threads = 8; break;
-      case 4: num_threads = 16; break;
-      case 5: num_threads = 32; break;
-      case 6: num_threads = 36; break;
-      default: num_threads = 1;
+   Apollo::Region *r = nullptr;
+   if(!r){
+      r = new Apollo::Region(NUM_FEATURES, "CalcElemVolumeDerivative--hourglass", NUM_POLICIES);
    }
 
-   // Set the thread count according to policy
-   omp_set_num_threads(num_threads);
+   // Start the Apollo region
+   r->begin();
+   // Set the feature to track
+   r->setFeature(float(numElem));
+   // Set the number of OMP threads based on the policy
+   setNumThreads(r->getPolicyIndex());
 #endif
 
    /* start loop over elements */
@@ -1161,7 +1170,7 @@ void CalcHourglassControlForElems(Domain& domain,
    }
 
 #ifdef USE_APOLLO
-   ::r->end();
+   r->end();
 #endif
 
    if ( hgcoef > Real_t(0.) ) {
@@ -2973,9 +2982,6 @@ int main(int argc, char *argv[])
 {
 #ifdef USE_APOLLO
    apollo = Apollo::instance();
-
-   // A region without PAPI
-   ::r = new Apollo::Region( NUM_FEATURES, "CalcElemVolumeDerivative--hourglass", NUM_POLICIES);
 #endif
 
 #ifdef USE_CALIPER
@@ -3088,6 +3094,11 @@ int main(int argc, char *argv[])
                    << "time = " << double(locDom->time()) << ", "
                    << "dt="     << double(locDom->deltatime()) << "\n";
          std::cout.unsetf(std::ios_base::floatfield);
+
+      #ifdef USE_APOLLO
+         // Reduce best measures and Build a tree from the measurements
+         ::apollo->flushAllRegionMeasurements(locDom->cycle());
+      #endif
       }
    }
 
@@ -3127,10 +3138,6 @@ int main(int argc, char *argv[])
     CALI_MARK_END("main-region");
 #endif
 
-#ifdef USE_APOLLO
-   // Build a tree from the measurements
-   ::apollo->flushAllRegionMeasurements(1);
-#endif
 
    return 0 ;
 }
