@@ -168,7 +168,6 @@ Additional BSD Notice
    #define NUM_POLICIES 7
 
    Apollo* apollo;
-   Apollo::Region *r;
 
 static inline
 void setNumThreads(int policy){
@@ -189,7 +188,22 @@ void setNumThreads(int policy){
    omp_set_num_threads(num_threads);
 }
 
-#endif
+#define startApolloRegion(REGION_NAME, ...)\
+   static Apollo::Region* r = nullptr; \
+   if(!r){ \
+      r = new Apollo::Region(NUM_FEATURES, REGION_NAME, NUM_POLICIES); \
+   } \
+   /* Start the Apollo region */ \
+   r->begin(); \
+   /* Set the feature to track */ \
+   r->setFeature(__VA_ARGS__); \
+   /* Set the number of OMP threads based on the policy */ \
+   setNumThreads(r->getPolicyIndex());
+
+#define stopApolloRegion()\
+   r->end();
+
+#endif // end USE_APOLLO
 
 #ifdef USE_CALIPER
    #include "caliper/cali.h"
@@ -1121,17 +1135,7 @@ void CalcHourglassControlForElems(Domain& domain,
    Real_t *z8n  = Allocate<Real_t>(numElem8) ;
 
 #ifdef USE_APOLLO
-   Apollo::Region *r = nullptr;
-   if(!r){
-      r = new Apollo::Region(NUM_FEATURES, "CalcElemVolumeDerivative--hourglass", NUM_POLICIES);
-   }
-
-   // Start the Apollo region
-   r->begin();
-   // Set the feature to track
-   r->setFeature(float(numElem));
-   // Set the number of OMP threads based on the policy
-   setNumThreads(r->getPolicyIndex());
+   startApolloRegion("CalcElemVolumeDerivative--hourglass", float(numElem));
 #endif
 
    /* start loop over elements */
@@ -1170,7 +1174,7 @@ void CalcHourglassControlForElems(Domain& domain,
    }
 
 #ifdef USE_APOLLO
-   r->end();
+   stopApolloRegion();
 #endif
 
    if ( hgcoef > Real_t(0.) ) {
