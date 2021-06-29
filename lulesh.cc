@@ -325,6 +325,9 @@ void CalcElemShapeFunctionDerivatives( Real_t const x[],
                                        Real_t b[][8],
                                        Real_t* const volume )
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcElemShapeFunctionDerivatives");
+#endif
   const Real_t x0 = x[0] ;   const Real_t x1 = x[1] ;
   const Real_t x2 = x[2] ;   const Real_t x3 = x[3] ;
   const Real_t x4 = x[4] ;   const Real_t x5 = x[5] ;
@@ -405,6 +408,10 @@ void CalcElemShapeFunctionDerivatives( Real_t const x[],
 
   /* calculate jacobian determinant (volume) */
   *volume = Real_t(8.) * ( fjxet * cjxet + fjyet * cjyet + fjzet * cjzet);
+
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcElemShapeFunctionDerivatives");
+#endif
 }
 
 /******************************************/
@@ -419,6 +426,9 @@ void SumElemFaceNormal(Real_t *normalX0, Real_t *normalY0, Real_t *normalZ0,
                        const Real_t x2, const Real_t y2, const Real_t z2,
                        const Real_t x3, const Real_t y3, const Real_t z3)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("SumElemFaceNormal");
+#endif
    Real_t bisectX0 = Real_t(0.5) * (x3 + x2 - x1 - x0);
    Real_t bisectY0 = Real_t(0.5) * (y3 + y2 - y1 - y0);
    Real_t bisectZ0 = Real_t(0.5) * (z3 + z2 - z1 - z0);
@@ -443,6 +453,9 @@ void SumElemFaceNormal(Real_t *normalX0, Real_t *normalY0, Real_t *normalZ0,
    *normalZ1 += areaZ;
    *normalZ2 += areaZ;
    *normalZ3 += areaZ;
+#ifdef USE_CALIPER
+    CALI_MARK_END("SumElemFaceNormal");
+#endif
 }
 
 /******************************************/
@@ -455,6 +468,9 @@ void CalcElemNodeNormals(Real_t pfx[8],
                          const Real_t y[8],
                          const Real_t z[8])
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcElemNodeNormals");
+#endif
    for (Index_t i = 0 ; i < 8 ; ++i) {
       pfx[i] = Real_t(0.0);
       pfy[i] = Real_t(0.0);
@@ -502,6 +518,9 @@ void CalcElemNodeNormals(Real_t pfx[8],
                   &pfx[5], &pfy[5], &pfz[5],
                   x[4], y[4], z[4], x[7], y[7], z[7],
                   x[6], y[6], z[6], x[5], y[5], z[5]);
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcElemNodeNormals");
+#endif
 }
 
 /******************************************/
@@ -513,11 +532,17 @@ void SumElemStressesToNodeForces( const Real_t B[][8],
                                   const Real_t stress_zz,
                                   Real_t fx[], Real_t fy[], Real_t fz[] )
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("SumElemStressesToNodeForces");
+#endif
    for(Index_t i = 0; i < 8; i++) {
       fx[i] = -( stress_xx * B[0][i] );
       fy[i] = -( stress_yy * B[1][i]  );
       fz[i] = -( stress_zz * B[2][i] );
    }
+#ifdef USE_CALIPER
+    CALI_MARK_END("SumElemStressesToNodeForces");
+#endif
 }
 
 /******************************************/
@@ -1394,6 +1419,9 @@ Real_t CalcElemVolume( const Real_t x0, const Real_t x1,
                const Real_t z4, const Real_t z5,
                const Real_t z6, const Real_t z7 )
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcElemVolume");
+#endif
   Real_t twelveth = Real_t(1.0)/Real_t(12.0);
 
   Real_t dx61 = x6 - x1;
@@ -1462,6 +1490,9 @@ Real_t CalcElemVolume( const Real_t x0, const Real_t x1,
 
   volume *= twelveth;
 
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcElemVolume");
+#endif
   return volume ;
 }
 
@@ -1485,6 +1516,9 @@ Real_t AreaFace( const Real_t x0, const Real_t x1,
                  const Real_t z0, const Real_t z1,
                  const Real_t z2, const Real_t z3)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("AreaFace");
+#endif
    Real_t fx = (x2 - x0) - (x3 - x1);
    Real_t fy = (y2 - y0) - (y3 - y1);
    Real_t fz = (z2 - z0) - (z3 - z1);
@@ -1496,6 +1530,10 @@ Real_t AreaFace( const Real_t x0, const Real_t x1,
       (gx * gx + gy * gy + gz * gz) -
       (fx * gx + fy * gy + fz * gz) *
       (fx * gx + fy * gy + fz * gz);
+
+#ifdef USE_CALIPER
+    CALI_MARK_END("AreaFace");
+#endif
    return area ;
 }
 
@@ -1507,6 +1545,9 @@ Real_t CalcElemCharacteristicLength( const Real_t x[8],
                                      const Real_t z[8],
                                      const Real_t volume)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcElemCharacteristicLength");
+#endif
    Real_t a, charLength = Real_t(0.0);
 
    a = AreaFace(x[0],x[1],x[2],x[3],
@@ -1541,6 +1582,9 @@ Real_t CalcElemCharacteristicLength( const Real_t x[8],
 
    charLength = Real_t(4.0) * volume / SQRT(charLength);
 
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcElemCharacteristicLength");
+#endif
    return charLength;
 }
 
@@ -1554,6 +1598,9 @@ void CalcElemVelocityGradient( const Real_t* const xvel,
                                 const Real_t detJ,
                                 Real_t* const d )
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcElemVelocityGradient");
+#endif
   const Real_t inv_detJ = Real_t(1.0) / detJ ;
   Real_t dyddx, dxddy, dzddx, dxddz, dzddy, dyddz;
   const Real_t* const pfx = b[0];
@@ -1607,6 +1654,9 @@ void CalcElemVelocityGradient( const Real_t* const xvel,
   d[5]  = Real_t( .5) * ( dxddy + dyddx );
   d[4]  = Real_t( .5) * ( dxddz + dzddx );
   d[3]  = Real_t( .5) * ( dzddy + dyddz );
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcElemVelocityGradient");
+#endif
 }
 
 /******************************************/
@@ -1615,6 +1665,9 @@ void CalcElemVelocityGradient( const Real_t* const xvel,
 void CalcKinematicsForElems( Domain &domain,
                              Real_t deltaTime, Index_t numElem )
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcKinematicsForElems");
+#endif
 
   // loop over all elements
 #pragma omp parallel for firstprivate(numElem, deltaTime)
@@ -1675,6 +1728,9 @@ void CalcKinematicsForElems( Domain &domain,
     domain.dyy(k) = D[1];
     domain.dzz(k) = D[2];
   }
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcKinematicsForElems");
+#endif
 }
 
 /******************************************/
@@ -1729,6 +1785,9 @@ void CalcLagrangeElements(Domain& domain)
 static inline
 void CalcMonotonicQGradientsForElems(Domain& domain)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcMonotonicQGradientsForElems");
+#endif
    Index_t numElem = domain.numElem();
 
 #pragma omp parallel for firstprivate(numElem)
@@ -1870,6 +1929,9 @@ void CalcMonotonicQGradientsForElems(Domain& domain)
 
       domain.delv_eta(i) = ax*dxv + ay*dyv + az*dzv ;
    }
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcMonotonicQGradientsForElems");
+#endif
 }
 
 /******************************************/
@@ -1878,6 +1940,9 @@ static inline
 void CalcMonotonicQRegionForElems(Domain &domain, Int_t r,
                                   Real_t ptiny)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcMonotonicQRegionForElems");
+#endif
    Real_t monoq_limiter_mult = domain.monoq_limiter_mult();
    Real_t monoq_max_slope = domain.monoq_max_slope();
    Real_t qlc_monoq = domain.qlc_monoq();
@@ -2034,6 +2099,9 @@ void CalcMonotonicQRegionForElems(Domain &domain, Int_t r,
       domain.qq(ielem) = qquad ;
       domain.ql(ielem) = qlin  ;
    }
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcMonotonicQRegionForElems");
+#endif
 }
 
 /******************************************/
@@ -2041,6 +2109,9 @@ void CalcMonotonicQRegionForElems(Domain &domain, Int_t r,
 static inline
 void CalcMonotonicQForElems(Domain& domain)
 {  
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcMonotonicQForElems");
+#endif
    //
    // initialize parameters
    // 
@@ -2054,6 +2125,9 @@ void CalcMonotonicQForElems(Domain& domain)
          CalcMonotonicQRegionForElems(domain, r, ptiny) ;
       }
    }
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcMonotonicQForElems");
+#endif
 }
 
 /******************************************/
@@ -2143,7 +2217,7 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
                           Index_t length, Index_t *regElemList)
 {
 #ifdef USE_CALIPER
-    //CALI_MARK_BEGIN("CalcPressureForElems");
+    CALI_MARK_BEGIN("CalcPressureForElems");
 #endif
 #pragma omp parallel for firstprivate(length)
    for (Index_t i = 0; i < length ; ++i) {
@@ -2168,7 +2242,7 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
          p_new[i]   = pmin ;
    }
 #ifdef USE_CALIPER
-    //CALI_MARK_END("CalcPressureForElems");
+    CALI_MARK_END("CalcPressureForElems");
 #endif
 }
 
@@ -2202,12 +2276,12 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
    }
 
 #ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcPressureForElems1");
+    //CALI_MARK_BEGIN("CalcPressureForElems1");
 #endif
    CalcPressureForElems(pHalfStep, bvc, pbvc, e_new, compHalfStep, vnewc,
                         pmin, p_cut, eosvmax, length, regElemList);
 #ifdef USE_CALIPER
-    CALI_MARK_END("CalcPressureForElems1");
+    //CALI_MARK_END("CalcPressureForElems1");
 #endif
 
 #pragma omp parallel for firstprivate(length, rho0)
@@ -2249,12 +2323,12 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
    }
 
 #ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcPressureForElems2");
+    //CALI_MARK_BEGIN("CalcPressureForElems2");
 #endif
    CalcPressureForElems(p_new, bvc, pbvc, e_new, compression, vnewc,
                         pmin, p_cut, eosvmax, length, regElemList);
 #ifdef USE_CALIPER
-    CALI_MARK_END("CalcPressureForElems2");
+    //CALI_MARK_END("CalcPressureForElems2");
 #endif
 
 #pragma omp parallel for firstprivate(length, rho0, emin, e_cut)
@@ -2292,12 +2366,12 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
    }
 
 #ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcPressureForElems3");
+    //CALI_MARK_BEGIN("CalcPressureForElems3");
 #endif
    CalcPressureForElems(p_new, bvc, pbvc, e_new, compression, vnewc,
                         pmin, p_cut, eosvmax, length, regElemList);
 #ifdef USE_CALIPER
-    CALI_MARK_END("CalcPressureForElems3");
+    //CALI_MARK_END("CalcPressureForElems3");
 #endif
 
 #pragma omp parallel for firstprivate(length, rho0, q_cut)
@@ -2711,6 +2785,9 @@ static inline
 void CalcHydroConstraintForElems(Domain &domain, Index_t length,
                                  Index_t *regElemlist, Real_t dvovmax, Real_t& dthydro)
 {
+#ifdef USE_CALIPER
+    CALI_MARK_BEGIN("CalcHydroConstraintForElems");
+#endif
 #if _OPENMP
    const Index_t threads = omp_get_max_threads();
    Index_t hydro_elem_per_thread[threads];
@@ -2761,6 +2838,9 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
       dthydro =  dthydro_per_thread[0] ;
    }
 
+#ifdef USE_CALIPER
+    CALI_MARK_END("CalcHydroConstraintForElems");
+#endif
    return ;
 }
 
