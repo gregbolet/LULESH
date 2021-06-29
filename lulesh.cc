@@ -160,15 +160,19 @@ Additional BSD Notice
 #endif
 
 #ifdef USE_APOLLO
+   #include "apollo/Config.h"
    #include "apollo/Apollo.h"
    #include "apollo/Region.h"
+
+   #define NUM_FEATURES 1
+   #define NUM_POLICIES 7
+
+   Apollo* apollo;
+   Apollo::Region *r;
 #endif
 
 #ifdef USE_CALIPER
    #include "caliper/cali.h"
-   cali_id_t thread_id_attr    = CALI_INV_ID;
-   cali_id_t num_threads_attr  = CALI_INV_ID;
-   cali_id_t problem_size_attr = CALI_INV_ID;
 #endif
 
 #include "lulesh.h"
@@ -1096,6 +1100,31 @@ void CalcHourglassControlForElems(Domain& domain,
    Real_t *y8n  = Allocate<Real_t>(numElem8) ;
    Real_t *z8n  = Allocate<Real_t>(numElem8) ;
 
+#ifdef USE_APOLLO
+   // Start the Apollo region
+   ::r->begin();
+
+   // Set the feature to track
+   ::r->setFeature(float(numElem));
+
+   int num_threads, policy = ::r->getPolicyIndex();
+   //printf("Feature %d Policy %d\n", feature, policy);
+
+   switch(policy){
+      case 0: num_threads = 1; break;
+      case 1: num_threads = 2; break;
+      case 2: num_threads = 4; break;
+      case 3: num_threads = 8; break;
+      case 4: num_threads = 16; break;
+      case 5: num_threads = 32; break;
+      case 6: num_threads = 36; break;
+      default: num_threads = 1;
+   }
+
+   // Set the thread count according to policy
+   omp_set_num_threads(num_threads);
+#endif
+
    /* start loop over elements */
 #pragma omp parallel for firstprivate(numElem)
    for (Index_t i=0 ; i<numElem ; ++i){
@@ -1130,6 +1159,10 @@ void CalcHourglassControlForElems(Domain& domain,
 #endif
       }
    }
+
+#ifdef USE_APOLLO
+   ::r->end();
+#endif
 
    if ( hgcoef > Real_t(0.) ) {
       CalcFBHourglassForceForElems( domain,
@@ -2934,11 +2967,15 @@ void LagrangeLeapFrog(Domain& domain)
 
 
 /******************************************/
+// Make these global for the purpose of not having to pass pointers around
 
 int main(int argc, char *argv[])
 {
 #ifdef USE_APOLLO
-    Apollo *apollo = Apollo::instance();
+   apollo = Apollo::instance();
+
+   // A region without PAPI
+   ::r = new Apollo::Region( NUM_FEATURES, "CalcElemVolumeDerivative--hourglass", NUM_POLICIES);
 #endif
 
 #ifdef USE_CALIPER
