@@ -3127,5 +3127,10 @@ int main(int argc, char *argv[])
     CALI_MARK_END("main-region");
 #endif
 
+#ifdef USE_APOLLO
+   // Build a tree from the measurements
+   ::apollo->flushAllRegionMeasurements(1);
+#endif
+
    return 0 ;
 }
