@@ -177,10 +177,10 @@ void setNumThreads(int policy){
       case 0: num_threads = 1; break;
       case 1: num_threads = 2; break;
       case 2: num_threads = 4; break;
-      case 3: num_threads = 8; break;
-      case 4: num_threads = 16; break;
-      case 5: num_threads = 32; break;
-      case 6: num_threads = 36; break;
+      case 3: num_threads = 9; break;
+      case 4: num_threads = 18; break;
+      case 5: num_threads = 36; break;
+      case 6: num_threads = 72; break;
       default: num_threads = 1;
    }
 
@@ -3182,7 +3182,7 @@ void LagrangeLeapFrog(Domain& domain)
 int main(int argc, char *argv[])
 {
 #ifdef USE_APOLLO
-   apollo = Apollo::instance();
+   ::apollo = Apollo::instance();
 #endif
 
 #ifdef USE_CALIPER
@@ -3231,6 +3231,7 @@ int main(int argc, char *argv[])
    opts.balance = 1;
    opts.cost = 1;
 
+
    ParseCommandLineOptions(argc, argv, myRank, &opts);
 
    if ((myRank == 0) && (opts.quiet == 0)) {
@@ -3249,6 +3250,7 @@ int main(int argc, char *argv[])
       std::cout << "See help (-h) for more options\n\n";
    }
 
+
    // Set up the mesh and decompose. Assumes regular cubes for now
    Int_t col, row, plane, side;
    InitMeshDecomp(numRanks, myRank, &col, &row, &plane, &side);
@@ -3256,6 +3258,7 @@ int main(int argc, char *argv[])
    // Build the main data structure and initialize it
    locDom = new Domain(numRanks, col, row, plane, opts.nx,
                        side, opts.numReg, opts.balance, opts.cost) ;
+
 
 
 #if USE_MPI   
@@ -3281,6 +3284,7 @@ int main(int argc, char *argv[])
    timeval start;
    gettimeofday(&start, NULL) ;
 #endif
+
 //debug to see region sizes
 //   for(Int_t i = 0; i < locDom->numReg(); i++)
 //      std::cout << "region" << i + 1<< "size" << locDom->regElemSize(i) <<std::endl;
@@ -3295,12 +3299,13 @@ int main(int argc, char *argv[])
                    << "time = " << double(locDom->time()) << ", "
                    << "dt="     << double(locDom->deltatime()) << "\n";
          std::cout.unsetf(std::ios_base::floatfield);
-
-      #ifdef USE_APOLLO
-         // Reduce best measures and Build a tree from the measurements
-         ::apollo->flushAllRegionMeasurements(locDom->cycle());
-      #endif
       }
+      
+      #ifdef USE_APOLLO
+         //std::cout << "TRAINING! " << locDom->cycle() << std::endl;
+         // Reduce best measures and Build a tree from the measurements
+         ::apollo->train(locDom->cycle());
+      #endif
    }
 
    // Use reduced max elapsed time
