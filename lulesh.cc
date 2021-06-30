@@ -2940,28 +2940,18 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
 #ifdef USE_CALIPER
     CALI_MARK_BEGIN("CalcCourantConstraintForElems");
 #endif
+#ifdef USE_APOLLO
+   startApolloRegion("CalcCourantConstraintForElems", {(float)length});
+#endif
+
 #if _OPENMP
-   #ifdef USE_APOLLO
-      Index_t threads;
-      Index_t* courant_elem_per_thread;
-      Real_t* dtcourant_per_thread;
-   #else
       const Index_t threads = omp_get_max_threads();
       Index_t courant_elem_per_thread[threads];
       Real_t dtcourant_per_thread[threads];
-   #endif
 #else
    Index_t threads = 1;
    Index_t courant_elem_per_thread[1];
    Real_t  dtcourant_per_thread[1];
-#endif
-
-#ifdef USE_APOLLO
-   startApolloRegion("CalcCourantConstraintForElems", {(float)length});
-
-   threads = omp_get_max_threads();
-   courant_elem_per_thread = (Index_t *) malloc(sizeof(Index_t) * threads);
-   dtcourant_per_thread = (Real_t *) malloc(sizeof(Real_t) * threads);
 #endif
 
 #pragma omp parallel firstprivate(length, qqc)
@@ -3001,9 +2991,6 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
       dtcourant_per_thread[thread_num]    = dtcourant_tmp ;
       courant_elem_per_thread[thread_num] = courant_elem ;
    }
-#ifdef USE_APOLLO
-   stopApolloRegion(); 
-#endif
 
    for (Index_t i = 1; i < threads; ++i) {
       if (dtcourant_per_thread[i] < dtcourant_per_thread[0] ) {
@@ -3017,8 +3004,7 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
    }
 
 #ifdef USE_APOLLO
-   free(courant_elem_per_thread);
-   free(dtcourant_per_thread);
+   stopApolloRegion(); 
 #endif
 
 #ifdef USE_CALIPER
@@ -3037,29 +3023,21 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
 #ifdef USE_CALIPER
     CALI_MARK_BEGIN("CalcHydroConstraintForElems");
 #endif
+
+#ifdef USE_APOLLO
+   startApolloRegion("CalcHydroConstraintForElems", {(float)length});
+#endif
+
 #if _OPENMP
-   #ifdef USE_APOLLO
-      Index_t threads;
-      Index_t* hydro_elem_per_thread;
-      Real_t* dthydro_per_thread;
-   #else
       const Index_t threads = omp_get_max_threads();
       Index_t hydro_elem_per_thread[threads];
       Real_t dthydro_per_thread[threads];
-   #endif
 #else
    Index_t threads = 1;
    Index_t hydro_elem_per_thread[1];
    Real_t  dthydro_per_thread[1];
 #endif
 
-#ifdef USE_APOLLO
-   startApolloRegion("CalcHydroConstraintForElems", {(float)length});
-
-   threads = omp_get_max_threads();
-   hydro_elem_per_thread = (Index_t *) malloc(sizeof(Index_t) * threads);
-   dthydro_per_thread = (Real_t *) malloc(sizeof(Real_t) * threads);
-#endif
 #pragma omp parallel firstprivate(length, dvovmax)
    {
       Real_t dthydro_tmp = dthydro ;
@@ -3088,9 +3066,6 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
       dthydro_per_thread[thread_num]    = dthydro_tmp ;
       hydro_elem_per_thread[thread_num] = hydro_elem ;
    }
-#ifdef USE_APOLLO
-   stopApolloRegion(); 
-#endif
 
    for (Index_t i = 1; i < threads; ++i) {
       if(dthydro_per_thread[i] < dthydro_per_thread[0]) {
@@ -3104,8 +3079,7 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
    }
 
 #ifdef USE_APOLLO
-   free(hydro_elem_per_thread);
-   free(dthydro_per_thread);
+   stopApolloRegion(); 
 #endif
 
 #ifdef USE_CALIPER
