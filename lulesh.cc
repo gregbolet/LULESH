@@ -676,6 +676,7 @@ void IntegrateStressForElems( Domain &domain,
 
 #ifdef USE_APOLLO
    startApolloRegion("IntegrateStressForElems2", {float(numElem)});
+   numthreads = omp_get_max_threads();
 #endif
   if (numthreads > 1) {
      // If threaded, then we need to copy the data out of the temporary
@@ -1125,6 +1126,7 @@ void CalcFBHourglassForceForElems( Domain &domain,
 
 #ifdef USE_APOLLO
    startApolloRegion("CalcFBHourglassForceForElems2", {float(numNode)});
+   numthreads = omp_get_max_threads();
 #endif
    if (numthreads > 1) {
      // Collect the data from the local arrays into the final force arrays
