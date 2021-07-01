@@ -18,12 +18,14 @@ export OMP_PROC_BIND=true
 
 EXEC_DIR=~/workspace/lulesh/build
 TRACE_DIR=$EXEC_DIR/trace
-PROB_SIZE=-s 50
-#NUM_ITERS=-i 100
-NUM_TIERS=
-NUM_REGIONS=-r 1000
-
+ANALY_DIR=~/workspace/apollo/src/python/analysis
 echo $EXEC_DIR, $TRACE_DIR
+
+PROB_SIZE="-s 30"
+#NUM_ITERS="-i 100"
+NUM_TIERS=
+NUM_REGIONS="-r 100"
+
 cd $EXEC_DIR
 rm -rf $TRACE_DIR
 
@@ -39,3 +41,6 @@ $EXEC_DIR/./lulesh2.0 $PROB_SIZE $NUM_ITERS $NUM_REGIONS
 
 export APOLLO_INIT_MODEL=Random
 $EXEC_DIR/./lulesh2.0 $PROB_SIZE $NUM_ITERS $NUM_REGIONS
+
+# Do the trace analysis
+$ANALY_DIR/./analyze-traces.py --dir $TRACE_DIR --rr --random -nstatic 7 -nranks 1

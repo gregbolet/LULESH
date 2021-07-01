@@ -603,7 +603,7 @@ void IntegrateStressForElems( Domain &domain,
     CALI_MARK_BEGIN("IntegrateStressForElems");
 #endif
 #if _OPENMP
-   Index_t numthreads = omp_get_max_threads();
+   Index_t numthreads;
 #else
    Index_t numthreads = 1;
 #endif
@@ -616,6 +616,10 @@ void IntegrateStressForElems( Domain &domain,
    Real_t fy_local[8] ;
    Real_t fz_local[8] ;
 
+#ifdef USE_APOLLO
+   startApolloRegion("IntegrateStressForElems1", {float(numElem)});
+   numthreads = omp_get_max_threads();
+#endif
 
   if (numthreads > 1) {
      fx_elem = Allocate<Real_t>(numElem8) ;
@@ -623,9 +627,6 @@ void IntegrateStressForElems( Domain &domain,
      fz_elem = Allocate<Real_t>(numElem8) ;
   }
 
-#ifdef USE_APOLLO
-   startApolloRegion("IntegrateStressForElems1", {float(numElem)});
-#endif
   // loop over all elements
 
 #pragma omp parallel for firstprivate(numElem)
@@ -865,7 +866,7 @@ void CalcFBHourglassForceForElems( Domain &domain,
 #endif
 
 #if _OPENMP
-   Index_t numthreads = omp_get_max_threads();
+   Index_t numthreads; 
 #else
    Index_t numthreads = 1;
 #endif
@@ -881,6 +882,11 @@ void CalcFBHourglassForceForElems( Domain &domain,
    Real_t *fx_elem; 
    Real_t *fy_elem; 
    Real_t *fz_elem; 
+
+#ifdef USE_APOLLO
+   startApolloRegion("CalcFBHourglassForceForElems1", {float(numElem)});
+   numthreads = omp_get_max_threads();
+#endif
 
    if(numthreads > 1) {
       fx_elem = Allocate<Real_t>(numElem8) ;
@@ -927,9 +933,6 @@ void CalcFBHourglassForceForElems( Domain &domain,
 /*    compute the hourglass modes */
 
 
-#ifdef USE_APOLLO
-   startApolloRegion("CalcFBHourglassForceForElems1", {float(numElem)});
-#endif
 
 #pragma omp parallel for firstprivate(numElem, hourg)
    for(Index_t i2=0;i2<numElem;++i2){
