@@ -165,7 +165,8 @@ Additional BSD Notice
    #include "apollo/Region.h"
 
    #define NUM_FEATURES 1
-   #define NUM_POLICIES 7
+   #define NUM_POLICIES 2
+   //#define NUM_POLICIES 7
 
    Apollo* apollo;
 
@@ -173,6 +174,11 @@ static inline
 void setNumThreads(int policy){
    int num_threads;
 
+   switch(policy){
+      case 0: num_threads = 1; break;
+      default: num_threads = 36;
+   }
+/*
    switch(policy){
       case 0: num_threads = 1; break;
       case 1: num_threads = 2; break;
@@ -183,7 +189,7 @@ void setNumThreads(int policy){
       case 6: num_threads = 72; break;
       default: num_threads = 1;
    }
-
+*/
    // Set the thread count according to policy
    omp_set_num_threads(num_threads);
 }
@@ -603,7 +609,7 @@ void IntegrateStressForElems( Domain &domain,
     CALI_MARK_BEGIN("IntegrateStressForElems");
 #endif
 #if _OPENMP
-   Index_t numthreads;
+   Index_t numthreads = omp_get_max_threads();
 #else
    Index_t numthreads = 1;
 #endif
@@ -867,7 +873,7 @@ void CalcFBHourglassForceForElems( Domain &domain,
 #endif
 
 #if _OPENMP
-   Index_t numthreads; 
+      Index_t numthreads = omp_get_max_threads();
 #else
    Index_t numthreads = 1;
 #endif
