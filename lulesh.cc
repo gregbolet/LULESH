@@ -673,12 +673,12 @@ void IntegrateStressForElems( Domain &domain,
    stopApolloRegion();
 #endif
 
-  if (numthreads > 1) {
-     // If threaded, then we need to copy the data out of the temporary
-     // arrays used above into the final forces field
 #ifdef USE_APOLLO
    startApolloRegion("IntegrateStressForElems2", {float(numElem)});
 #endif
+  if (numthreads > 1) {
+     // If threaded, then we need to copy the data out of the temporary
+     // arrays used above into the final forces field
 
 #pragma omp parallel for firstprivate(numNode)
      for( Index_t gnode=0 ; gnode<numNode ; ++gnode )
@@ -702,10 +702,10 @@ void IntegrateStressForElems( Domain &domain,
      Release(&fy_elem) ;
      Release(&fx_elem) ;
 
+  }
 #ifdef USE_APOLLO
    stopApolloRegion();
 #endif
-  }
 
 #ifdef USE_CALIPER
     CALI_MARK_END("IntegrateStressForElems");
@@ -1120,10 +1120,10 @@ void CalcFBHourglassForceForElems( Domain &domain,
    stopApolloRegion();
 #endif
 
-   if (numthreads > 1) {
 #ifdef USE_APOLLO
    startApolloRegion("CalcFBHourglassForceForElems2", {float(numNode)});
 #endif
+   if (numthreads > 1) {
      // Collect the data from the local arrays into the final force arrays
 #pragma omp parallel for firstprivate(numNode)
       for( Index_t gnode=0 ; gnode<numNode ; ++gnode )
@@ -1147,10 +1147,10 @@ void CalcFBHourglassForceForElems( Domain &domain,
       Release(&fy_elem) ;
       Release(&fx_elem) ;
 
+   }
 #ifdef USE_APOLLO
    stopApolloRegion();
 #endif
-   }
 
 #ifdef USE_CALIPER
     CALI_MARK_END("CalcFBHourglassForceForElems");
