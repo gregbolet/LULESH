@@ -21,8 +21,8 @@ TRACE_DIR=$EXEC_DIR/trace
 ANALY_DIR=~/workspace/apollo/src/python/analysis
 echo $EXEC_DIR, $TRACE_DIR
 
-PROB_SIZE="-s 30"
-NUM_ITERS="-i 500"
+PROB_SIZE="-s 60"
+NUM_ITERS="-i 100"
 #NUM_TIERS=
 NUM_REGIONS="-r 100"
 
