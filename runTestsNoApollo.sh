@@ -1,17 +1,17 @@
 #!/bin/bash
 
-export OMP_WAIT_POLICY=passive
-#export OMP_WAIT_POLICY=active
+#export OMP_WAIT_POLICY=passive
+export OMP_WAIT_POLICY=active
 export OMP_PROC_BIND=true
 #export OMP_PROC_BIND=false
-export OMP_PLACES=core
+export OMP_PLACES=cores
 
 EXEC_DIR=~/workspace/lulesh/build
 echo $EXEC_DIR
 cd $EXEC_DIR
 
-PROB_SIZE="-s 30"
-NUM_ITERS="-i 500"
+PROB_SIZE="-s 60"
+NUM_ITERS="-i 100"
 NUM_REGIONS="-r 100"
 
 export OMP_NUM_THREADS=36

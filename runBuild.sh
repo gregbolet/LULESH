@@ -2,6 +2,9 @@
 
 cd ./build
 
+export CC=$(which clang++)
+export CXX=$(which clang++)
+
 cmake -DCMAKE_BUILD_TYPE=Release -DWITH_MPI=Off -DWITH_OPENMP=On \
       -DWITH_APOLLO=Off \
       -DAPOLLO_DIR=/g/g15/bolet1/workspace/apollo/ \
