@@ -193,18 +193,23 @@ void setNumThreads(int policy){
    // Set the thread count according to policy
    omp_set_num_threads(num_threads);
 }
+// apolloRegion = new Apollo::Region(NUM_FEATURES, REGION_NAME, NUM_POLICIES, {"PAPI_DP_OPS"}, 0); 
 
 #define startApolloRegion(REGION_NAME, FEATURE_VECTOR)\
    {static Apollo::Region* apolloRegion = nullptr; \
    if(!apolloRegion){ \
-      apolloRegion = new Apollo::Region(NUM_FEATURES, REGION_NAME, NUM_POLICIES); \
+      apolloRegion = new Apollo::Region(NUM_FEATURES, REGION_NAME, NUM_POLICIES, {"PAPI_DP_OPS"}, 0); \
    } \
    /* Start the Apollo region */ \
    apolloRegion->begin(FEATURE_VECTOR); \
-   /* Set the feature to track */ \
-   /*apolloRegion->setFeature(__VA_ARGS__);*/ \
    /* Set the number of OMP threads based on the policy */ \
    setNumThreads(apolloRegion->getPolicyIndex());
+
+#define startApolloThread()\
+   apolloRegion->apolloThreadBegin();
+
+#define stopApolloThread()\
+   apolloRegion->apolloThreadEnd();
 
 #define stopApolloRegion()\
    apolloRegion->end();}
@@ -356,10 +361,21 @@ void InitStressTermsForElems(Domain &domain,
    startApolloRegion("InitStressTermsForElems", {float(numElem)});
 #endif
 
-#pragma omp parallel for firstprivate(numElem)
+#pragma omp parallel
+{
+#ifdef USE_APOLLO
+   startApolloThread();
+#endif
+
+#pragma omp for firstprivate(numElem)
    for (Index_t i = 0 ; i < numElem ; ++i){
       sigxx[i] = sigyy[i] = sigzz[i] =  - domain.p(i) - domain.q(i) ;
    }
+
+#ifdef USE_APOLLO
+   stopApolloThread();
+#endif
+}
 #ifdef USE_APOLLO
    stopApolloRegion();
 #endif

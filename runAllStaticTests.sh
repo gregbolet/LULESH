@@ -29,7 +29,7 @@ NUM_REGIONS="-r 100"
 cd $EXEC_DIR
 rm -rf $TRACE_DIR
 
-POLICIES=(0 1 2 3 4 5 6)
+POLICIES=(0 1)
 
 for policy in ${POLICIES[@]}; do
 	export APOLLO_INIT_MODEL=Static,$policy
