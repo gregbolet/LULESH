@@ -15,6 +15,7 @@ export OMP_WAIT_POLICY=active
 export OMP_PROC_BIND=true
 #export OMP_PROC_BIND=false
 export OMP_PLACES=cores
+export OMP_NESTED=true
 
 EXEC_DIR=~/workspace/lulesh/build
 echo $EXEC_DIR

@@ -2536,7 +2536,7 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
 #pragma omp parallel
 {
 #ifdef USE_APOLLO
-   //startApolloThread();
+   startApolloThread();
 #endif
 #pragma omp for firstprivate(length)
    for (Index_t i = 0; i < length ; ++i) {
@@ -2545,7 +2545,7 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
       pbvc[i] = c1s;
    }
 #ifdef USE_APOLLO
-   //stopApolloThread();
+   stopApolloThread();
 #endif
 }
 #ifdef USE_APOLLO
@@ -2558,7 +2558,7 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
 #pragma omp parallel
 {
 #ifdef USE_APOLLO
-   //startApolloThread();
+   startApolloThread();
 #endif
 #pragma omp for firstprivate(length, pmin, p_cut, eosvmax)
    for (Index_t i = 0 ; i < length ; ++i){
@@ -2576,7 +2576,7 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
          p_new[i]   = pmin ;
    }
 #ifdef USE_APOLLO
-   //stopApolloThread();
+   stopApolloThread();
 #endif
 }
 #ifdef USE_APOLLO
@@ -2612,7 +2612,7 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
 #pragma omp parallel
 {
 #ifdef USE_APOLLO
-   //startApolloThread();
+   startApolloThread();
 #endif
 #pragma omp for firstprivate(length, emin)
    for (Index_t i = 0 ; i < length ; ++i) {
@@ -2624,7 +2624,7 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
       }
    }
 #ifdef USE_APOLLO
-   //stopApolloThread();
+   stopApolloThread();
 #endif
 }
 #ifdef USE_APOLLO
@@ -2646,7 +2646,7 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
 #pragma omp parallel
 {
 #ifdef USE_APOLLO
-   //startApolloThread();
+   startApolloThread();
 #endif
 #pragma omp for firstprivate(length, rho0)
    for (Index_t i = 0 ; i < length ; ++i) {
@@ -2673,7 +2673,7 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
               - Real_t(4.0)*(pHalfStep[i] + q_new[i])) ;
    }
 #ifdef USE_APOLLO
-   //stopApolloThread();
+   stopApolloThread();
 #endif
 }
 #ifdef USE_APOLLO
@@ -2686,7 +2686,7 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
 #pragma omp parallel
 {
 #ifdef USE_APOLLO
-   //startApolloThread();
+   startApolloThread();
 #endif
 #pragma omp for firstprivate(length, emin, e_cut)
    for (Index_t i = 0 ; i < length ; ++i) {
@@ -2701,7 +2701,7 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
       }
    }
 #ifdef USE_APOLLO
-   //stopApolloThread();
+   stopApolloThread();
 #endif
 }
 #ifdef USE_APOLLO
@@ -2723,7 +2723,7 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
 #pragma omp parallel
 {
 #ifdef USE_APOLLO
-   //startApolloThread();
+   startApolloThread();
 #endif
 #pragma omp for firstprivate(length, rho0, emin, e_cut)
    for (Index_t i = 0 ; i < length ; ++i){
@@ -2759,7 +2759,7 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
       }
    }
 #ifdef USE_APOLLO
-   //stopApolloThread();
+   stopApolloThread();
 #endif
 }
 #ifdef USE_APOLLO
@@ -2781,7 +2781,7 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
 #pragma omp parallel
 {
 #ifdef USE_APOLLO
-   //startApolloThread();
+   startApolloThread();
 #endif
 #pragma omp for firstprivate(length, rho0, q_cut)
    for (Index_t i = 0 ; i < length ; ++i){
@@ -2806,7 +2806,7 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
    Release(&pHalfStep) ;
 
 #ifdef USE_APOLLO
-   //stopApolloThread();
+   stopApolloThread();
 #endif
 }
 #ifdef USE_APOLLO
@@ -2837,7 +2837,7 @@ void CalcSoundSpeedForElems(Domain &domain,
 #pragma omp parallel
 {
 #ifdef USE_APOLLO
-   //startApolloThread();
+   startApolloThread();
 #endif
 #pragma omp for firstprivate(rho0, ss4o3)
    for (Index_t i = 0; i < len ; ++i) {
@@ -2853,7 +2853,7 @@ void CalcSoundSpeedForElems(Domain &domain,
       domain.ss(ielem) = ssTmp ;
    }
 #ifdef USE_APOLLO
-   //stopApolloThread();
+   stopApolloThread();
 #endif
 }
 #ifdef USE_APOLLO
@@ -2911,7 +2911,7 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
 #pragma omp parallel
       {
 #ifdef USE_APOLLO
-   //startApolloThread();
+   startApolloThread();
 #endif
 #pragma omp for nowait firstprivate(numElemReg)
          for (Index_t i=0; i<numElemReg; ++i) {
@@ -2961,7 +2961,7 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
          }
 
 #ifdef USE_APOLLO
-   //stopApolloThread();
+   stopApolloThread();
 #endif
       }
 #ifdef USE_APOLLO
@@ -2981,7 +2981,7 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
 #pragma omp parallel
 {
 #ifdef USE_APOLLO
-   //startApolloThread();
+   startApolloThread();
 #endif
 #pragma omp for firstprivate(numElemReg)
    for (Index_t i=0; i<numElemReg; ++i) {
@@ -2991,7 +2991,7 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
       domain.q(ielem) = q_new[i] ;
    }
 #ifdef USE_APOLLO
-   //stopApolloThread();
+   stopApolloThread();
 #endif
 }
 #ifdef USE_APOLLO
@@ -3045,7 +3045,7 @@ void ApplyMaterialPropertiesForElems(Domain& domain)
 #pragma omp parallel
     {
 #ifdef USE_APOLLO
-   //startApolloThread();
+   startApolloThread();
 #endif
 #pragma omp for firstprivate(numElem)
        for(Index_t i=0 ; i<numElem ; ++i) {
@@ -3092,7 +3092,7 @@ void ApplyMaterialPropertiesForElems(Domain& domain)
           }
        }
 #ifdef USE_APOLLO
-   //stopApolloThread();
+   stopApolloThread();
 #endif
     }
 #ifdef USE_APOLLO
@@ -3140,7 +3140,7 @@ void UpdateVolumesForElems(Domain &domain,
 #pragma omp parallel
 {
 #ifdef USE_APOLLO
-   //startApolloThread();
+   startApolloThread();
 #endif
 #pragma omp for firstprivate(length, v_cut)
       for(Index_t i=0 ; i<length ; ++i) {
@@ -3152,7 +3152,7 @@ void UpdateVolumesForElems(Domain &domain,
          domain.v(i) = tmpV ;
       }
 #ifdef USE_APOLLO
-   //stopApolloThread();
+   stopApolloThread();
 #endif
 }
 #ifdef USE_APOLLO
@@ -3217,7 +3217,7 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
 #pragma omp parallel firstprivate(length, qqc)
    {
 #ifdef USE_APOLLO
-   //startApolloThread();
+   startApolloThread();
 #endif
       Real_t   qqc2 = Real_t(64.0) * qqc * qqc ;
       Real_t   dtcourant_tmp = dtcourant;
@@ -3254,7 +3254,7 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
       dtcourant_per_thread[thread_num]    = dtcourant_tmp ;
       courant_elem_per_thread[thread_num] = courant_elem ;
 #ifdef USE_APOLLO
-   //stopApolloThread();
+   stopApolloThread();
 #endif
    }
 
@@ -3307,7 +3307,7 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
 #pragma omp parallel firstprivate(length, dvovmax)
    {
 #ifdef USE_APOLLO
-   //startApolloThread();
+   startApolloThread();
 #endif
       Real_t dthydro_tmp = dthydro ;
       Index_t hydro_elem = -1 ;
@@ -3335,7 +3335,7 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
       dthydro_per_thread[thread_num]    = dthydro_tmp ;
       hydro_elem_per_thread[thread_num] = hydro_elem ;
 #ifdef USE_APOLLO
-   //stopApolloThread();
+   stopApolloThread();
 #endif
    }
 
