@@ -15,6 +15,9 @@ export OMP_WAIT_POLICY=passive
 #export OMP_WAIT_POLICY=active
 export OMP_PROC_BIND=true
 #export OMP_PROC_BIND=false
+#export OMP_PROC_BIND=false
+export OMP_PLACES=cores
+export OMP_NUM_THREADS=36
 
 EXEC_DIR=~/workspace/lulesh/build
 TRACE_DIR=$EXEC_DIR/trace

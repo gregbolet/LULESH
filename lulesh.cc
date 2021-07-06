@@ -176,6 +176,7 @@ void setNumThreads(int policy){
 
    switch(policy){
       case 0: num_threads = 1; break;
+      case 1: num_threads = 36; break;
       default: num_threads = 36;
    }
 /*
@@ -206,10 +207,10 @@ void setNumThreads(int policy){
    setNumThreads(apolloRegion->getPolicyIndex());
 
 #define startApolloThread()\
-   apolloRegion->apolloThreadBegin();
+   //apolloRegion->apolloThreadBegin();
 
 #define stopApolloThread()\
-   apolloRegion->apolloThreadEnd();
+   //apolloRegion->apolloThreadEnd();
 
 #define stopApolloRegion()\
    apolloRegion->end();}
@@ -361,13 +362,13 @@ void InitStressTermsForElems(Domain &domain,
    startApolloRegion("InitStressTermsForElems", {float(numElem)});
 #endif
 
-#pragma omp parallel
+#pragma omp parallel firstprivate(numElem)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
 
-#pragma omp for firstprivate(numElem)
+#pragma omp for 
    for (Index_t i = 0 ; i < numElem ; ++i){
       sigxx[i] = sigyy[i] = sigzz[i] =  - domain.p(i) - domain.q(i) ;
    }
@@ -651,12 +652,12 @@ void IntegrateStressForElems( Domain &domain,
 
   // loop over all elements
 
-#pragma omp parallel
+#pragma omp parallel firstprivate(numElem)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(numElem)
+#pragma omp for
   for( Index_t k=0 ; k<numElem ; ++k )
   {
     const Index_t* const elemToNode = domain.nodelist(k);
@@ -713,12 +714,12 @@ void IntegrateStressForElems( Domain &domain,
      // If threaded, then we need to copy the data out of the temporary
      // arrays used above into the final forces field
 
-#pragma omp parallel
+#pragma omp parallel firstprivate(numNode)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(numNode)
+#pragma omp for
      for( Index_t gnode=0 ; gnode<numNode ; ++gnode )
      {
         Index_t count = domain.nodeElemCount(gnode) ;
@@ -736,14 +737,14 @@ void IntegrateStressForElems( Domain &domain,
         domain.fy(gnode) = fy_tmp ;
         domain.fz(gnode) = fz_tmp ;
      }
-     Release(&fz_elem) ;
-     Release(&fy_elem) ;
-     Release(&fx_elem) ;
-
 #ifdef USE_APOLLO
    stopApolloThread();
 #endif
 }
+     Release(&fz_elem) ;
+     Release(&fy_elem) ;
+     Release(&fx_elem) ;
+
    }
 #ifdef USE_APOLLO
    stopApolloRegion();
@@ -974,13 +975,13 @@ void CalcFBHourglassForceForElems( Domain &domain,
 /*    compute the hourglass modes */
 
 
-#pragma omp parallel
+#pragma omp parallel firstprivate(numElem, hourg)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
 
-#pragma omp for firstprivate(numElem, hourg)
+#pragma omp for
    for(Index_t i2=0;i2<numElem;++i2){
       Real_t *fx_local, *fy_local, *fz_local ;
       Real_t hgfx[8], hgfy[8], hgfz[8] ;
@@ -1178,12 +1179,12 @@ void CalcFBHourglassForceForElems( Domain &domain,
 #endif
    if (numthreads > 1) {
      // Collect the data from the local arrays into the final force arrays
-#pragma omp parallel
+#pragma omp parallel firstprivate(numNode)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(numNode)
+#pragma omp for
       for( Index_t gnode=0 ; gnode<numNode ; ++gnode )
       {
          Index_t count = domain.nodeElemCount(gnode) ;
@@ -1201,14 +1202,14 @@ void CalcFBHourglassForceForElems( Domain &domain,
          domain.fy(gnode) += fy_tmp ;
          domain.fz(gnode) += fz_tmp ;
       }
-      Release(&fz_elem) ;
-      Release(&fy_elem) ;
-      Release(&fx_elem) ;
-
 #ifdef USE_APOLLO
    stopApolloThread();
 #endif
 }
+      Release(&fz_elem) ;
+      Release(&fy_elem) ;
+      Release(&fx_elem) ;
+
    }
 #ifdef USE_APOLLO
    stopApolloRegion();
@@ -1241,13 +1242,13 @@ void CalcHourglassControlForElems(Domain& domain,
    startApolloRegion("CalcElemVolumeDerivative--hourglass", {float(numElem)});
 #endif
 
-#pragma omp parallel
+#pragma omp parallel firstprivate(numElem)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
    /* start loop over elements */
-#pragma omp for firstprivate(numElem)
+#pragma omp for
    for (Index_t i=0 ; i<numElem ; ++i){
       Real_t  x1[8],  y1[8],  z1[8] ;
       Real_t pfx[8], pfy[8], pfz[8] ;
@@ -1336,13 +1337,13 @@ void CalcVolumeForceForElems(Domain& domain)
 #ifdef USE_APOLLO
    startApolloRegion("CalcVolumeForceForElems", {float(numElem)});
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(numElem)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
       // check for negative element volume
-#pragma omp for firstprivate(numElem)
+#pragma omp for
       for ( Index_t k=0 ; k<numElem ; ++k ) {
          if (determ[k] <= Real_t(0.0)) {
 #if USE_MPI            
@@ -1391,12 +1392,12 @@ static inline void CalcForceForNodes(Domain& domain)
 #ifdef USE_APOLLO
    startApolloRegion("CalcForceForNodes", {float(numNode)});
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(numNode)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(numNode)
+#pragma omp for
   for (Index_t i=0; i<numNode; ++i) {
      domain.fx(i) = Real_t(0.0) ;
      domain.fy(i) = Real_t(0.0) ;
@@ -1442,12 +1443,12 @@ void CalcAccelerationForNodes(Domain &domain, Index_t numNode)
 #ifdef USE_APOLLO
    startApolloRegion("CalcAccelerationForNodes", {float(numNode)});
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(numNode)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(numNode)
+#pragma omp for
    for (Index_t i = 0; i < numNode; ++i) {
       domain.xdd(i) = domain.fx(i) / domain.nodalMass(i);
       domain.ydd(i) = domain.fy(i) / domain.nodalMass(i);
@@ -1525,12 +1526,12 @@ void CalcVelocityForNodes(Domain &domain, const Real_t dt, const Real_t u_cut,
 #ifdef USE_APOLLO
    startApolloRegion("CalcVelocityForNodes", {float(numNode)});
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(numNode)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(numNode)
+#pragma omp for
    for ( Index_t i = 0 ; i < numNode ; ++i )
    {
      Real_t xdtmp, ydtmp, zdtmp ;
@@ -1570,12 +1571,12 @@ void CalcPositionForNodes(Domain &domain, const Real_t dt, Index_t numNode)
 #ifdef USE_APOLLO
    startApolloRegion("CalcPositionForNodes", {float(numNode)});
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(numNode)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(numNode)
+#pragma omp for
    for ( Index_t i = 0 ; i < numNode ; ++i )
    {
      domain.x(i) += domain.xd(i) * dt ;
@@ -1920,13 +1921,13 @@ void CalcKinematicsForElems( Domain &domain,
 #ifdef USE_APOLLO
    startApolloRegion("CalcKinematicsForElems", {float(numElem)});
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(numElem, deltaTime)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
   // loop over all elements
-#pragma omp for firstprivate(numElem, deltaTime)
+#pragma omp for
   for( Index_t k=0 ; k<numElem ; ++k )
   {
     Real_t B[3][8] ; /** shape function derivatives */
@@ -2016,12 +2017,12 @@ void CalcLagrangeElements(Domain& domain)
 #ifdef USE_APOLLO
    startApolloRegion("CalcLagrangeElements", {float(numElem)});
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(numElem)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(numElem)
+#pragma omp for
       for ( Index_t k=0 ; k<numElem ; ++k )
       {
          // calc strain rate and apply as constraint (only done in FB element)
@@ -2071,12 +2072,12 @@ void CalcMonotonicQGradientsForElems(Domain& domain)
 #ifdef USE_APOLLO
    startApolloRegion("CalcMonotonicQGradientsForElems", {float(numElem)});
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(numElem)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(numElem)
+#pragma omp for
    for (Index_t i = 0 ; i < numElem ; ++i ) {
       const Real_t ptiny = Real_t(1.e-36) ;
       Real_t ax,ay,az ;
@@ -2245,12 +2246,12 @@ void CalcMonotonicQRegionForElems(Domain &domain, Int_t r,
 #ifdef USE_APOLLO
    startApolloRegion("CalcMonotonicQRegionForElems", {((float)domain.regElemSize(r))} );
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(qlc_monoq, qqc_monoq, monoq_limiter_mult, monoq_max_slope, ptiny)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(qlc_monoq, qqc_monoq, monoq_limiter_mult, monoq_max_slope, ptiny)
+#pragma omp for
    for ( Index_t i = 0 ; i < domain.regElemSize(r); ++i ) {
       Index_t ielem = domain.regElemlist(r,i);
       Real_t qlin, qquad ;
@@ -2533,12 +2534,12 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
 #ifdef USE_APOLLO
    startApolloRegion("CalcPressureForElems1", {(float) length } );
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(length)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(length)
+#pragma omp for
    for (Index_t i = 0; i < length ; ++i) {
       Real_t c1s = Real_t(2.0)/Real_t(3.0) ;
       bvc[i] = c1s * (compression[i] + Real_t(1.));
@@ -2555,12 +2556,12 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
 #ifdef USE_APOLLO
    startApolloRegion("CalcPressureForElems2", {(float)length} );
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(length, pmin, p_cut, eosvmax)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(length, pmin, p_cut, eosvmax)
+#pragma omp for
    for (Index_t i = 0 ; i < length ; ++i){
       Index_t ielem = regElemList[i];
       
@@ -2609,12 +2610,12 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
 #ifdef USE_APOLLO
    startApolloRegion("CalcEnergyForElems1", {(float)length });
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(length, emin)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(length, emin)
+#pragma omp for
    for (Index_t i = 0 ; i < length ; ++i) {
       e_new[i] = e_old[i] - Real_t(0.5) * delvc[i] * (p_old[i] + q_old[i])
          + Real_t(0.5) * work[i];
@@ -2643,12 +2644,12 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
 #ifdef USE_APOLLO
    startApolloRegion("CalcEnergyForElems2", {(float)length });
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(length, rho0)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(length, rho0)
+#pragma omp for
    for (Index_t i = 0 ; i < length ; ++i) {
       Real_t vhalf = Real_t(1.) / (Real_t(1.) + compHalfStep[i]) ;
 
@@ -2683,12 +2684,12 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
 #ifdef USE_APOLLO
    startApolloRegion("CalcEnergyForElems3", {(float)length });
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(length, emin, e_cut)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(length, emin, e_cut)
+#pragma omp for
    for (Index_t i = 0 ; i < length ; ++i) {
 
       e_new[i] += Real_t(0.5) * work[i];
@@ -2720,12 +2721,12 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
 #ifdef USE_APOLLO
    startApolloRegion("CalcEnergyForElems4", {(float)length });
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(length, rho0, emin, e_cut)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(length, rho0, emin, e_cut)
+#pragma omp for
    for (Index_t i = 0 ; i < length ; ++i){
       const Real_t sixth = Real_t(1.0) / Real_t(6.0) ;
       Index_t ielem = regElemList[i];
@@ -2778,12 +2779,12 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
 #ifdef USE_APOLLO
    startApolloRegion("CalcEnergyForElems5", {(float)length });
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(length, rho0, q_cut)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(length, rho0, q_cut)
+#pragma omp for
    for (Index_t i = 0 ; i < length ; ++i){
       Index_t ielem = regElemList[i];
 
@@ -2803,12 +2804,12 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
       }
    }
 
-   Release(&pHalfStep) ;
-
 #ifdef USE_APOLLO
    stopApolloThread();
 #endif
 }
+   Release(&pHalfStep) ;
+
 #ifdef USE_APOLLO
    stopApolloRegion();
 #endif
@@ -2834,12 +2835,12 @@ void CalcSoundSpeedForElems(Domain &domain,
 #ifdef USE_APOLLO
    startApolloRegion("CalcSoundSpeedForElems", {(float)len });
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(rho0, ss4o3)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(rho0, ss4o3)
+#pragma omp for
    for (Index_t i = 0; i < len ; ++i) {
       Index_t ielem = regElemList[i];
       Real_t ssTmp = (pbvc[i] * enewc[i] + vnewc[ielem] * vnewc[ielem] *
@@ -2978,12 +2979,12 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
 #ifdef USE_APOLLO
    startApolloRegion("EvalEOSForElems2", {(float)numElemReg });
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(numElemReg)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(numElemReg)
+#pragma omp for 
    for (Index_t i=0; i<numElemReg; ++i) {
       Index_t ielem = regElemList[i];
       domain.p(ielem) = p_new[i] ;
@@ -3137,12 +3138,12 @@ void UpdateVolumesForElems(Domain &domain,
 #ifdef USE_APOLLO
    startApolloRegion("UpdateVolumesForElems", {(float)length});
 #endif
-#pragma omp parallel
+#pragma omp parallel firstprivate(length, v_cut)
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for firstprivate(length, v_cut)
+#pragma omp for
       for(Index_t i=0 ; i<length ; ++i) {
          Real_t tmpV = domain.vnew(i) ;
 

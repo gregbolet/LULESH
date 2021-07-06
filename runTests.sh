@@ -9,13 +9,14 @@ export APOLLO_REGION_MODEL=1
 export APOLLO_STORE_MODELS=0
 #export APOLLO_TRACE_MEASURES=1
 export APOLLO_TRACE_MEASURES=0
-export APOLLO_TRACE_CSV=0
+#export APOLLO_TRACE_CSV=0
+export APOLLO_TRACE_CSV=1
 #export OMP_WAIT_POLICY=passive
 export OMP_WAIT_POLICY=active
 export OMP_PROC_BIND=true
 #export OMP_PROC_BIND=false
 export OMP_PLACES=cores
-export OMP_NESTED=true
+export OMP_NESTED=false
 
 EXEC_DIR=~/workspace/lulesh/build
 echo $EXEC_DIR
@@ -25,8 +26,10 @@ PROB_SIZE="-s 60"
 NUM_ITERS="-i 100"
 NUM_REGIONS="-r 100"
 
-export OMP_NUM_THREADS=36
+export OMP_NUM_THREADS=1
+export APOLLO_INIT_MODEL=Static,0
 $EXEC_DIR/./lulesh2.0 $PROB_SIZE $NUM_ITERS $NUM_REGIONS
 
-export OMP_NUM_THREADS=1
+export OMP_NUM_THREADS=36
+export APOLLO_INIT_MODEL=Static,1
 $EXEC_DIR/./lulesh2.0 $PROB_SIZE $NUM_ITERS $NUM_REGIONS
