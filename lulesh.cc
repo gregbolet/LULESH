@@ -1169,14 +1169,16 @@ void CalcFBHourglassForceForElems( Domain &domain,
    stopApolloThread();
 #endif
 }
-#ifdef USE_APOLLO
-   stopApolloRegion();
-#endif
 
-#ifdef USE_APOLLO
-   startApolloRegion("CalcFBHourglassForceForElems2", {float(numNode)});
-   numthreads = omp_get_max_threads();
-#endif
+//#ifdef USE_APOLLO
+   //stopApolloRegion();
+//#endif
+
+//#ifdef USE_APOLLO
+   //startApolloRegion("CalcFBHourglassForceForElems2", {float(numNode)});
+   //numthreads = omp_get_max_threads();
+//#endif
+
    if (numthreads > 1) {
      // Collect the data from the local arrays into the final force arrays
 #pragma omp parallel firstprivate(numNode)
