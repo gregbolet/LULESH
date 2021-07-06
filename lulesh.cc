@@ -702,14 +702,14 @@ void IntegrateStressForElems( Domain &domain,
 #endif
 }
 
-#ifdef USE_APOLLO
-   stopApolloRegion();
-#endif
+//#ifdef USE_APOLLO
+   //stopApolloRegion();
+//#endif
 
-#ifdef USE_APOLLO
-   startApolloRegion("IntegrateStressForElems2", {float(numElem)});
-   numthreads = omp_get_max_threads();
-#endif
+//#ifdef USE_APOLLO
+   //startApolloRegion("IntegrateStressForElems2", {float(numElem)});
+   //numthreads = omp_get_max_threads();
+//#endif
   if (numthreads > 1) {
      // If threaded, then we need to copy the data out of the temporary
      // arrays used above into the final forces field

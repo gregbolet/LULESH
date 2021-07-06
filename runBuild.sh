@@ -11,7 +11,7 @@ export CC=$(which clang)
 export CXX=$(which clang++)
 
 cmake -DWITH_MPI=Off -DWITH_OPENMP=On \
-      -DCMAKE_BUILD_TYPE=Release \
+      -DCMAKE_BUILD_TYPE=Debug \
       -DWITH_APOLLO=On \
       -DAPOLLO_DIR=/g/g15/bolet1/workspace/apollo/ \
       -DWITH_CALIPER=Off \

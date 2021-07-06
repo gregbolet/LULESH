@@ -11,8 +11,8 @@ export APOLLO_STORE_MODELS=0
 export APOLLO_TRACE_MEASURES=0
 export APOLLO_TRACE_CSV=1
 #export APOLLO_TRACE_CSV_FOLDER_SUFFIX=
-export OMP_WAIT_POLICY=passive
-#export OMP_WAIT_POLICY=active
+#export OMP_WAIT_POLICY=passive
+export OMP_WAIT_POLICY=active
 export OMP_PROC_BIND=true
 #export OMP_PROC_BIND=false
 #export OMP_PROC_BIND=false
@@ -46,4 +46,4 @@ export APOLLO_INIT_MODEL=Random
 $EXEC_DIR/./lulesh2.0 $PROB_SIZE $NUM_ITERS $NUM_REGIONS
 
 # Do the trace analysis
-$ANALY_DIR/./analyze-traces.py --dir $TRACE_DIR --rr --random -nstatic ${#POLICIES[@]} -nranks 1
+$ANALY_DIR/./analyze-traces.py --dir $TRACE_DIR --rr --random --nstatic ${#POLICIES[@]} --nranks 1
