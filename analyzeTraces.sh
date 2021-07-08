@@ -7,4 +7,4 @@ ANALY_DIR=~/workspace/apollo/src/python/analysis
 POLICIES=(0 1)
 
 # Do the trace analysis
-$ANALY_DIR/./analyze-traces.py --dir $TRACE_DIR --rr --random --nstatic ${#POLICIES[@]} --nranks 1 --opt
+$ANALY_DIR/./analyze-traces.py --dir $TRACE_DIR --rr --random --nstatic ${#POLICIES[@]} --nranks 1

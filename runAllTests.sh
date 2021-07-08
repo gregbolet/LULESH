@@ -5,8 +5,8 @@ export APOLLO_LOCAL_TRAINING=1
 #export APOLLO_SINGLE_MODEL=1
 export APOLLO_SINGLE_MODEL=0
 export APOLLO_REGION_MODEL=1
-export APOLLO_STORE_MODELS=1
-#export APOLLO_STORE_MODELS=0
+#export APOLLO_STORE_MODELS=1
+export APOLLO_STORE_MODELS=0
 #export APOLLO_TRACE_MEASURES=1
 export APOLLO_TRACE_MEASURES=0
 export APOLLO_TRACE_CSV=1
@@ -31,6 +31,7 @@ NUM_REGIONS="-r 100"
 
 cd $EXEC_DIR
 rm -rf $TRACE_DIR
+mkdir trace
 
 POLICIES=(0 1)
 
@@ -46,4 +47,4 @@ export APOLLO_INIT_MODEL=Random
 $EXEC_DIR/./lulesh2.0 $PROB_SIZE $NUM_ITERS $NUM_REGIONS
 
 # Do the trace analysis
-$ANALY_DIR/./analyze-traces.py --dir $TRACE_DIR --rr --random --nstatic ${#POLICIES[@]} --nranks 1
+#$ANALY_DIR/./analyze-traces.py --dir $TRACE_DIR --rr --random --nstatic ${#POLICIES[@]} --nranks 1

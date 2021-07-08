@@ -164,7 +164,8 @@ Additional BSD Notice
    #include "apollo/Apollo.h"
    #include "apollo/Region.h"
 
-   #define NUM_FEATURES 1
+   #define NUM_FEATURES 2
+   //#define NUM_FEATURES 2
    #define NUM_POLICIES 2
    //#define NUM_POLICIES 7
 
@@ -175,8 +176,8 @@ void setNumThreads(int policy){
    int num_threads;
 
    switch(policy){
-      case 0: num_threads = 1; break;
-      case 1: num_threads = 36; break;
+      case 0: num_threads = 36; break;
+      case 1: num_threads = 1; break;
       default: num_threads = 36;
    }
 /*
@@ -199,7 +200,8 @@ void setNumThreads(int policy){
 #define startApolloRegion(REGION_NAME, FEATURE_VECTOR)\
    {static Apollo::Region* apolloRegion = nullptr; \
    if(!apolloRegion){ \
-      apolloRegion = new Apollo::Region(NUM_FEATURES, REGION_NAME, NUM_POLICIES, {"PAPI_DP_OPS"}, 0); \
+      apolloRegion = new Apollo::Region(NUM_FEATURES, REGION_NAME, NUM_POLICIES, {"PAPI_DP_OPS", "PAPI_SP_OPS"}, 1); \
+      /*apolloRegion = new Apollo::Region(NUM_FEATURES, REGION_NAME, NUM_POLICIES);*/ \
    } \
    /* Start the Apollo region */ \
    apolloRegion->begin(FEATURE_VECTOR); \
@@ -207,10 +209,10 @@ void setNumThreads(int policy){
    setNumThreads(apolloRegion->getPolicyIndex());
 
 #define startApolloThread()\
-   //apolloRegion->apolloThreadBegin();
+   apolloRegion->apolloThreadBegin();
 
 #define stopApolloThread()\
-   //apolloRegion->apolloThreadEnd();
+   apolloRegion->apolloThreadEnd();
 
 #define stopApolloRegion()\
    apolloRegion->end();}
