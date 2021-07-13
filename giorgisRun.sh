@@ -50,8 +50,8 @@ for B in $(seq 0 $BLIM); do
         mkdir -p "B$B-C$C"
 
         pushd "B$B-C$C"
-        #run_static
-	run_random
+        run_static
+	    run_random
         run_rr
         popd
     done

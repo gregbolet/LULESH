@@ -164,8 +164,6 @@ Additional BSD Notice
    #include "apollo/Apollo.h"
    #include "apollo/Region.h"
 
-   //#define NUM_FEATURES 1
-   //#define NUM_FEATURES 2
    #define NUM_POLICIES 2
    //#define NUM_POLICIES 7
 
@@ -200,8 +198,8 @@ void setNumThreads(int policy){
 #define startApolloRegion(REGION_NAME, FEATURE_VECTOR)\
    {static Apollo::Region* apolloRegion = nullptr; \
    if(!apolloRegion){ \
-      /*apolloRegion = new Apollo::Region(2, REGION_NAME, NUM_POLICIES, {"PAPI_DP_OPS", "PAPI_SP_OPS"}, 1);*/ \
-      apolloRegion = new Apollo::Region(1, REGION_NAME, NUM_POLICIES); \
+      apolloRegion = new Apollo::Region(2, REGION_NAME, NUM_POLICIES, {"PAPI_DP_OPS", "PAPI_SP_OPS"}, 1); \
+      /*apolloRegion = new Apollo::Region(1, REGION_NAME, NUM_POLICIES);*/ \
    } \
    /* Start the Apollo region */ \
    apolloRegion->begin(FEATURE_VECTOR); \
@@ -210,10 +208,10 @@ void setNumThreads(int policy){
 
 
 #define startApolloThread()\
-   //apolloRegion->apolloThreadBegin();
+   apolloRegion->apolloThreadBegin();
 
 #define stopApolloThread()\
-   //apolloRegion->apolloThreadEnd();
+   apolloRegion->apolloThreadEnd();
 
 #define stopApolloRegion()\
    apolloRegion->end();}
@@ -655,12 +653,12 @@ void IntegrateStressForElems( Domain &domain,
 
   // loop over all elements
 
-#pragma omp parallel firstprivate(numElem)
+#pragma omp parallel 
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
-#pragma omp for
+#pragma omp for firstprivate(numElem)
   for( Index_t k=0 ; k<numElem ; ++k )
   {
     const Index_t* const elemToNode = domain.nodelist(k);
@@ -700,29 +698,12 @@ void IntegrateStressForElems( Domain &domain,
        }
     }
   }
-#ifdef USE_APOLLO
-   stopApolloThread();
-#endif
-}
 
-//#ifdef USE_APOLLO
-   //stopApolloRegion();
-//#endif
-
-//#ifdef USE_APOLLO
-   //startApolloRegion("IntegrateStressForElems2", {float(numElem)});
-   //numthreads = omp_get_max_threads();
-//#endif
   if (numthreads > 1) {
      // If threaded, then we need to copy the data out of the temporary
      // arrays used above into the final forces field
 
-#pragma omp parallel firstprivate(numNode)
-{
-#ifdef USE_APOLLO
-   startApolloThread();
-#endif
-#pragma omp for
+#pragma omp for firstprivate(numNode)
      for( Index_t gnode=0 ; gnode<numNode ; ++gnode )
      {
         Index_t count = domain.nodeElemCount(gnode) ;
@@ -740,18 +721,22 @@ void IntegrateStressForElems( Domain &domain,
         domain.fy(gnode) = fy_tmp ;
         domain.fz(gnode) = fz_tmp ;
      }
+   }
+
 #ifdef USE_APOLLO
    stopApolloThread();
 #endif
-}
-     Release(&fz_elem) ;
-     Release(&fy_elem) ;
-     Release(&fx_elem) ;
+}//end of parallel region
 
-   }
 #ifdef USE_APOLLO
    stopApolloRegion();
 #endif
+
+if(numthreads > 1){
+   Release(&fz_elem) ;
+   Release(&fy_elem) ;
+   Release(&fx_elem) ;
+}
 
 #ifdef USE_CALIPER
     CALI_MARK_END("IntegrateStressForElems");
@@ -978,13 +963,13 @@ void CalcFBHourglassForceForElems( Domain &domain,
 /*    compute the hourglass modes */
 
 
-#pragma omp parallel firstprivate(numElem, hourg)
+#pragma omp parallel 
 {
 #ifdef USE_APOLLO
    startApolloThread();
 #endif
 
-#pragma omp for
+#pragma omp for firstprivate(numElem, hourg)
    for(Index_t i2=0;i2<numElem;++i2){
       Real_t *fx_local, *fy_local, *fz_local ;
       Real_t hgfx[8], hgfy[8], hgfz[8] ;
@@ -1168,10 +1153,10 @@ void CalcFBHourglassForceForElems( Domain &domain,
          domain.fz(n7si2) += hgfz[7];
       }
    }
-#ifdef USE_APOLLO
-   stopApolloThread();
-#endif
-}
+//#ifdef USE_APOLLO
+   //stopApolloThread();
+//#endif
+//}
 
 //#ifdef USE_APOLLO
    //stopApolloRegion();
@@ -1184,12 +1169,12 @@ void CalcFBHourglassForceForElems( Domain &domain,
 
    if (numthreads > 1) {
      // Collect the data from the local arrays into the final force arrays
-#pragma omp parallel firstprivate(numNode)
-{
-#ifdef USE_APOLLO
-   startApolloThread();
-#endif
-#pragma omp for
+//#pragma omp parallel
+//{
+//#ifdef USE_APOLLO
+   //startApolloThread();
+//#endif
+#pragma omp for firstprivate(numNode)
       for( Index_t gnode=0 ; gnode<numNode ; ++gnode )
       {
          Index_t count = domain.nodeElemCount(gnode) ;
@@ -1207,18 +1192,20 @@ void CalcFBHourglassForceForElems( Domain &domain,
          domain.fy(gnode) += fy_tmp ;
          domain.fz(gnode) += fz_tmp ;
       }
+}
 #ifdef USE_APOLLO
    stopApolloThread();
 #endif
-}
-      Release(&fz_elem) ;
-      Release(&fy_elem) ;
-      Release(&fx_elem) ;
-
-   }
+} // end of parallel region
 #ifdef USE_APOLLO
    stopApolloRegion();
 #endif
+
+if(numthreads > 1){
+      Release(&fz_elem) ;
+      Release(&fy_elem) ;
+      Release(&fx_elem) ;
+}
 
 #ifdef USE_CALIPER
     CALI_MARK_END("CalcFBHourglassForceForElems");
