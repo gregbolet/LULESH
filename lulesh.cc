@@ -164,7 +164,7 @@ Additional BSD Notice
    #include "apollo/Apollo.h"
    #include "apollo/Region.h"
 
-   #define NUM_FEATURES 2
+   //#define NUM_FEATURES 1
    //#define NUM_FEATURES 2
    #define NUM_POLICIES 2
    //#define NUM_POLICIES 7
@@ -200,19 +200,20 @@ void setNumThreads(int policy){
 #define startApolloRegion(REGION_NAME, FEATURE_VECTOR)\
    {static Apollo::Region* apolloRegion = nullptr; \
    if(!apolloRegion){ \
-      apolloRegion = new Apollo::Region(NUM_FEATURES, REGION_NAME, NUM_POLICIES, {"PAPI_DP_OPS", "PAPI_SP_OPS"}, 1); \
-      /*apolloRegion = new Apollo::Region(NUM_FEATURES, REGION_NAME, NUM_POLICIES);*/ \
+      /*apolloRegion = new Apollo::Region(2, REGION_NAME, NUM_POLICIES, {"PAPI_DP_OPS", "PAPI_SP_OPS"}, 1);*/ \
+      apolloRegion = new Apollo::Region(1, REGION_NAME, NUM_POLICIES); \
    } \
    /* Start the Apollo region */ \
    apolloRegion->begin(FEATURE_VECTOR); \
    /* Set the number of OMP threads based on the policy */ \
    setNumThreads(apolloRegion->getPolicyIndex());
 
+
 #define startApolloThread()\
-   apolloRegion->apolloThreadBegin();
+   //apolloRegion->apolloThreadBegin();
 
 #define stopApolloThread()\
-   apolloRegion->apolloThreadEnd();
+   //apolloRegion->apolloThreadEnd();
 
 #define stopApolloRegion()\
    apolloRegion->end();}
@@ -3508,6 +3509,10 @@ int main(int argc, char *argv[])
    opts.balance = 1;
    opts.cost = 1;
 
+#ifdef USE_APOLLO
+   //opts.trainInterval = 1;
+#endif
+
 
    ParseCommandLineOptions(argc, argv, myRank, &opts);
 
@@ -3516,6 +3521,10 @@ int main(int argc, char *argv[])
       std::cout << "Num processors: "      << numRanks << "\n";
 #if _OPENMP
       std::cout << "Num threads: " << omp_get_max_threads() << "\n";
+#endif
+
+#ifdef USE_APOLLO
+      //std::cout << "Training Interval: " << opts.trainInterval << std::endl;
 #endif
       std::cout << "Total number of elements: " << ((Int8_t)numRanks*opts.nx*opts.nx*opts.nx) << " \n\n";
       std::cout << "To run other sizes, use -s <integer>.\n";
@@ -3581,7 +3590,13 @@ int main(int argc, char *argv[])
       #ifdef USE_APOLLO
          //std::cout << "TRAINING! " << locDom->cycle() << std::endl;
          // Reduce best measures and Build a tree from the measurements
-         ::apollo->train(locDom->cycle());
+         //if(locDom->cycle() % 2 == 0){
+            //::apollo->train(locDom->cycle() / 2);
+         //}
+         //int numExecs = ::apollo->getRegionExecutions();
+         //if(numExecs%opts.trainInterval == 0){
+            //::apollo->train((int) numExecs/opts.trainInterval);
+         //}
       #endif
    }
 
