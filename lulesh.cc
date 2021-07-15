@@ -3446,14 +3446,6 @@ void LagrangeLeapFrog(Domain& domain)
 
 int main(int argc, char *argv[])
 {
-#ifdef USE_APOLLO
-   ::apollo = Apollo::instance();
-#endif
-
-#ifdef USE_CALIPER
-   cali_config_set("CALI_CALIPER_ATTRIBUTE_DEFAULT_SCOPE", "thread");
-   CALI_MARK_BEGIN("main-region");
-#endif
 
 
    Domain *locDom ;
@@ -3483,7 +3475,7 @@ int main(int argc, char *argv[])
 #else
    numRanks = 1;
    myRank = 0;
-#endif   
+#endif  // end of USE_MPI 
 
    /* Set defaults that can be overridden by command line opts */
    opts.its = 9999999;
@@ -3495,10 +3487,6 @@ int main(int argc, char *argv[])
    opts.viz = 0;
    opts.balance = 1;
    opts.cost = 1;
-
-#ifdef USE_APOLLO
-   //opts.trainInterval = 1;
-#endif
 
 
    ParseCommandLineOptions(argc, argv, myRank, &opts);
@@ -3523,6 +3511,14 @@ int main(int argc, char *argv[])
       std::cout << "See help (-h) for more options\n\n";
    }
 
+#ifdef USE_APOLLO
+   ::apollo = Apollo::instance();
+#endif
+
+#ifdef USE_CALIPER
+   cali_config_set("CALI_CALIPER_ATTRIBUTE_DEFAULT_SCOPE", "thread");
+   CALI_MARK_BEGIN("main-region");
+#endif
 
    // Set up the mesh and decompose. Assumes regular cubes for now
    Int_t col, row, plane, side;
