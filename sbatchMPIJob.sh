@@ -2,7 +2,7 @@
 #SBATCH --job-name=luleshMPITest
 #SBATCH --output=luleshMPIRun.log
 #SBATCH --ntasks=8
-#SBATCH --time=20:00
+#SBATCH --time=1:00:00
 
 export OMP_PLACES=cores
 export OMP_NUM_THREADS=36
@@ -21,4 +21,4 @@ export APOLLO_GLOBAL_TRAIN_PERIOD=10000
 export APOLLO_INIT_MODEL=Static,0
 
 # May want to try mpiexec instead -- we'll see
-srun ~/workspace/lulesh/build/lulesh2.0 -s 30 -i 1000 -r 100 -b 0 -c 0
+srun ~/workspace/lulesh/build/lulesh2.0 -s 30 -i 100 -r 100 -b 0 -c 0
