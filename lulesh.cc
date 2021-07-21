@@ -517,8 +517,9 @@ void IntegrateStressForElems( Domain &domain,
      fz_elem = Allocate<Real_t>(numElem8) ;
   }
   // loop over all elements
-
-#pragma omp parallel for firstprivate(numElem)
+#pragma omp parallel
+{
+#pragma omp for firstprivate(numElem)
   for( Index_t k=0 ; k<numElem ; ++k )
   {
     const Index_t* const elemToNode = domain.nodelist(k);
@@ -562,7 +563,7 @@ void IntegrateStressForElems( Domain &domain,
   if (numthreads > 1) {
      // If threaded, then we need to copy the data out of the temporary
      // arrays used above into the final forces field
-#pragma omp parallel for firstprivate(numNode)
+#pragma omp for firstprivate(numNode)
      for( Index_t gnode=0 ; gnode<numNode ; ++gnode )
      {
         Index_t count = domain.nodeElemCount(gnode) ;
@@ -580,10 +581,15 @@ void IntegrateStressForElems( Domain &domain,
         domain.fy(gnode) = fy_tmp ;
         domain.fz(gnode) = fz_tmp ;
      }
-     Release(&fz_elem) ;
-     Release(&fy_elem) ;
-     Release(&fx_elem) ;
   }
+} //end of parallel region
+
+if(numthreads > 1){
+   Release(&fz_elem) ;
+   Release(&fy_elem) ;
+   Release(&fx_elem) ;
+}
+
 }
 
 /******************************************/
@@ -778,8 +784,9 @@ void CalcFBHourglassForceForElems( Domain &domain,
 /*************************************************/
 /*    compute the hourglass modes */
 
-
-#pragma omp parallel for firstprivate(numElem, hourg)
+#pragma omp parallel
+{
+#pragma omp for firstprivate(numElem, hourg)
    for(Index_t i2=0;i2<numElem;++i2){
       Real_t *fx_local, *fy_local, *fz_local ;
       Real_t hgfx[8], hgfy[8], hgfz[8] ;
@@ -966,7 +973,7 @@ void CalcFBHourglassForceForElems( Domain &domain,
 
    if (numthreads > 1) {
      // Collect the data from the local arrays into the final force arrays
-#pragma omp parallel for firstprivate(numNode)
+#pragma omp for firstprivate(numNode)
       for( Index_t gnode=0 ; gnode<numNode ; ++gnode )
       {
          Index_t count = domain.nodeElemCount(gnode) ;
@@ -984,6 +991,9 @@ void CalcFBHourglassForceForElems( Domain &domain,
          domain.fy(gnode) += fy_tmp ;
          domain.fz(gnode) += fz_tmp ;
       }
+   }
+} //end of parallel region
+   if(numthreads > 1){
       Release(&fz_elem) ;
       Release(&fy_elem) ;
       Release(&fx_elem) ;
