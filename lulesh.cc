@@ -2474,18 +2474,27 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
                                    Index_t *regElemlist,
                                    Real_t qqc, Real_t& dtcourant)
 {
-#if _OPENMP
-   const Index_t threads = omp_get_max_threads();
-   Index_t courant_elem_per_thread[threads];
-   Real_t dtcourant_per_thread[threads];
-#else
-   Index_t threads = 1;
-   Index_t courant_elem_per_thread[1];
-   Real_t  dtcourant_per_thread[1];
-#endif
+   Index_t threads;
+   Index_t* courant_elem_per_thread;
+   Real_t*  dtcourant_per_thread;
+
 
 #pragma omp parallel firstprivate(length, qqc)
    {
+#pragma omp master
+{
+#if _OPENMP
+   threads = omp_get_num_threads();
+#else
+   threads = 1;
+#endif
+
+   courant_elem_per_thread = new Index_t[threads];
+   dtcourant_per_thread = new Real_t[threads];
+}
+
+#pragma omp barrier
+
       Real_t   qqc2 = Real_t(64.0) * qqc * qqc ;
       Real_t   dtcourant_tmp = dtcourant;
       Index_t  courant_elem  = -1 ;
@@ -2533,6 +2542,9 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
       dtcourant = dtcourant_per_thread[0] ;
    }
 
+   delete [] dtcourant_per_thread;
+   delete [] courant_elem_per_thread;
+
    return ;
 
 }
@@ -2543,18 +2555,27 @@ static inline
 void CalcHydroConstraintForElems(Domain &domain, Index_t length,
                                  Index_t *regElemlist, Real_t dvovmax, Real_t& dthydro)
 {
-#if _OPENMP
-   const Index_t threads = omp_get_max_threads();
-   Index_t hydro_elem_per_thread[threads];
-   Real_t dthydro_per_thread[threads];
-#else
-   Index_t threads = 1;
-   Index_t hydro_elem_per_thread[1];
-   Real_t  dthydro_per_thread[1];
-#endif
+
+   Index_t threads;
+   Index_t* hydro_elem_per_thread;
+   Real_t* dthydro_per_thread;
 
 #pragma omp parallel firstprivate(length, dvovmax)
    {
+#pragma omp master
+{
+
+#if _OPENMP
+   threads = omp_get_num_threads();
+#else
+   threads = 1;
+#endif
+   hydro_elem_per_thread = new Index_t[threads];
+   dthydro_per_thread = new Real_t[threads];
+}
+
+#pragma omp barrier
+
       Real_t dthydro_tmp = dthydro ;
       Index_t hydro_elem = -1 ;
 
@@ -2592,6 +2613,9 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
    if (hydro_elem_per_thread[0] != -1) {
       dthydro =  dthydro_per_thread[0] ;
    }
+
+   delete [] dthydro_per_thread;
+   delete [] hydro_elem_per_thread;
 
    return ;
 }
