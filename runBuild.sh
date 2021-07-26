@@ -1,15 +1,16 @@
 #!/bin/bash
+LLVM_INSTALL=/g/g15/bolet1/workspace/clang-apollo/llvm-project/build-release-quartz/install
+APOLLO_INSTALL=/g/g15/bolet1/workspace/apollo/build/install
+#APOLLO_INSTALL=/p/vast1/ggeorgak/projects/apollo/apollo/build-quartz-nompi/install
 
-BUILD_DIR=~/workspace/lulesh-region-fix-correct/LULESH/build
-
-cd $BUILD_DIR
-
-# Use clang@12.0.0
-export CC=$(which clang)
-export CXX=$(which clang++)
-
-cmake -DWITH_MPI=Off -DWITH_OPENMP=On \
-      -DCMAKE_BUILD_TYPE=Release \
-      ../
-
-#     -DCMAKE_BUILD_TYPE=Debug \
+export CXXFLAGS="-fopenmp -Xclang -load -Xclang ${LLVM_INSTALL}/../lib/LLVMApollo.so -mllvm --apollo-omp-numthreads=1 -march=native"
+export LDFLAGS="-L ${APOLLO_INSTALL}/lib -Wl,--rpath,${APOLLO_INSTALL}/lib -lapollo -Wl,--rpath,${LLVM_INSTALL}/lib"
+#export LDFLAGS="-L ${APOLLO_INSTALL}/lib -Wl,--rpath,${APOLLO_INSTALL}/lib -lapollo -Wl,--rpath,${LLVM_INSTALL}/lib"
+    #-DCMAKE_CXX_FLAGS=${CXXFLAGS} \
+cmake --verbose \
+    -DCMAKE_BUILD_TYPE=Release \
+    -DCMAKE_CXX_COMPILER=${LLVM_INSTALL}/bin/clang++ \
+    -DCMAKE_C_COMPILER=${LLVM_INSTALL}/bin/clang \
+    -DWITH_MPI=off \
+    -DWITH_OPENMP=on \
+    ..

@@ -496,11 +496,6 @@ void IntegrateStressForElems( Domain &domain,
                               Real_t *sigxx, Real_t *sigyy, Real_t *sigzz,
                               Real_t *determ, Index_t numElem, Index_t numNode)
 {
-#if _OPENMP
-   Index_t numthreads = omp_get_max_threads();
-#else
-   Index_t numthreads = 1;
-#endif
 
    Index_t numElem8 = numElem * 8 ;
    Real_t *fx_elem;
@@ -509,16 +504,28 @@ void IntegrateStressForElems( Domain &domain,
    Real_t fx_local[8] ;
    Real_t fy_local[8] ;
    Real_t fz_local[8] ;
+   Index_t numthreads;
 
 
-  if (numthreads > 1) {
-     fx_elem = Allocate<Real_t>(numElem8) ;
-     fy_elem = Allocate<Real_t>(numElem8) ;
-     fz_elem = Allocate<Real_t>(numElem8) ;
-  }
   // loop over all elements
 #pragma omp parallel
 {
+#pragma omp master
+{
+   #if _OPENMP
+      numthreads = omp_get_num_threads();
+   #else
+      numthreads = 1;
+   #endif
+   if (numthreads > 1) {
+      fx_elem = Allocate<Real_t>(numElem8) ;
+      fy_elem = Allocate<Real_t>(numElem8) ;
+      fz_elem = Allocate<Real_t>(numElem8) ;
+   }
+}
+
+#pragma omp barrier
+
 #pragma omp for firstprivate(numElem)
   for( Index_t k=0 ; k<numElem ; ++k )
   {
@@ -722,29 +729,19 @@ void CalcFBHourglassForceForElems( Domain &domain,
                                    Index_t numNode)
 {
 
-#if _OPENMP
-   Index_t numthreads = omp_get_max_threads();
-#else
-   Index_t numthreads = 1;
-#endif
    /*************************************************
     *
     *     FUNCTION: Calculates the Flanagan-Belytschko anti-hourglass
     *               force.
     *
     *************************************************/
-  
+   Index_t numthreads;
    Index_t numElem8 = numElem * 8 ;
 
    Real_t *fx_elem; 
    Real_t *fy_elem; 
    Real_t *fz_elem; 
 
-   if(numthreads > 1) {
-      fx_elem = Allocate<Real_t>(numElem8) ;
-      fy_elem = Allocate<Real_t>(numElem8) ;
-      fz_elem = Allocate<Real_t>(numElem8) ;
-   }
 
    Real_t  gamma[4][8];
 
@@ -786,6 +783,24 @@ void CalcFBHourglassForceForElems( Domain &domain,
 
 #pragma omp parallel
 {
+
+#pragma omp master
+{
+   #if _OPENMP
+      numthreads = omp_get_num_threads();
+   #else
+      numthreads = 1;
+   #endif
+
+   if(numthreads > 1) {
+      fx_elem = Allocate<Real_t>(numElem8) ;
+      fy_elem = Allocate<Real_t>(numElem8) ;
+      fz_elem = Allocate<Real_t>(numElem8) ;
+   }
+}   
+
+#pragma omp barrier
+
 #pragma omp for firstprivate(numElem, hourg)
    for(Index_t i2=0;i2<numElem;++i2){
       Real_t *fx_local, *fy_local, *fz_local ;
