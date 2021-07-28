@@ -198,7 +198,9 @@ void setNumThreads(int policy){
 #define startApolloRegion(REGION_NAME, FEATURE_VECTOR)\
    {static Apollo::Region* apolloRegion = nullptr; \
    if(!apolloRegion){ \
+      /*apolloRegion = new Apollo::Region(1, REGION_NAME, NUM_POLICIES, {"PAPI_DP_OPS"}, 0);*/ \
       apolloRegion = new Apollo::Region(2, REGION_NAME, NUM_POLICIES, {"PAPI_DP_OPS", "PAPI_SP_OPS"}, 1); \
+      /*apolloRegion = new Apollo::Region(1, REGION_NAME, NUM_POLICIES, {"PAPI_DP_OPS"}, 1);*/ \
       /*apolloRegion = new Apollo::Region(1, REGION_NAME, NUM_POLICIES);*/ \
    } \
    /* Start the Apollo region */ \
@@ -913,17 +915,6 @@ void CalcFBHourglassForceForElems( Domain &domain,
    Real_t *fy_elem; 
    Real_t *fz_elem; 
 
-#ifdef USE_APOLLO
-   startApolloRegion("CalcFBHourglassForceForElems1", {float(numElem)});
-   numthreads = omp_get_max_threads();
-#endif
-
-   if(numthreads > 1) {
-      fx_elem = Allocate<Real_t>(numElem8) ;
-      fy_elem = Allocate<Real_t>(numElem8) ;
-      fz_elem = Allocate<Real_t>(numElem8) ;
-   }
-
    Real_t  gamma[4][8];
 
    gamma[0][0] = Real_t( 1.);
@@ -962,6 +953,16 @@ void CalcFBHourglassForceForElems( Domain &domain,
 /*************************************************/
 /*    compute the hourglass modes */
 
+#ifdef USE_APOLLO
+   startApolloRegion("CalcFBHourglassForceForElems1", {float(numElem)});
+   numthreads = omp_get_max_threads();
+#endif
+
+   if(numthreads > 1) {
+      fx_elem = Allocate<Real_t>(numElem8) ;
+      fy_elem = Allocate<Real_t>(numElem8) ;
+      fz_elem = Allocate<Real_t>(numElem8) ;
+   }
 
 #pragma omp parallel 
 {
@@ -3251,6 +3252,10 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
 #endif
    }
 
+#ifdef USE_APOLLO
+   stopApolloRegion(); 
+#endif
+
    for (Index_t i = 1; i < threads; ++i) {
       if (dtcourant_per_thread[i] < dtcourant_per_thread[0] ) {
          dtcourant_per_thread[0]    = dtcourant_per_thread[i];
@@ -3262,9 +3267,6 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
       dtcourant = dtcourant_per_thread[0] ;
    }
 
-#ifdef USE_APOLLO
-   stopApolloRegion(); 
-#endif
 
 #ifdef USE_CALIPER
     CALI_MARK_END("CalcCourantConstraintForElems");
