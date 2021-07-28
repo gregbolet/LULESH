@@ -2,7 +2,7 @@
 #SBATCH --job-name=luleshVATest
 #SBATCH --output=luleshVARunData.log
 #SBATCH --ntasks=1
-#SBATCH --time=2:00:00
+#SBATCH --time=3:00:00
 #SBATCH --export=ALL
 
 SUFFIX="lulesh"
@@ -52,7 +52,7 @@ done
 ANALY_DIR=~/workspace/apollo/src/python/analysis
 CSV_DIR=~/workspace/lulesh/build/B0-C0/trace-lulesh
 
-for i in $(seq 1 30); do
+for i in $(seq 1 50); do
 for B in $(seq 0 $BLIM); do
     for C in $(seq 0 $CLIM); do
         PROG="srun -n 1 ../lulesh2.0 -s 30 -r 100 -b $B -c $C -i 1000"
