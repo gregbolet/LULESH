@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=luleshPATest
-#SBATCH --output=luleshPARunDataWithMultiplexing2Cntrs.log
+#SBATCH --output=luleshPARunDataWithMultiplexing1Cntr.log
 #SBATCH --ntasks=1
-#SBATCH --time=3:00:00
+#SBATCH --time=4:00:00
 #SBATCH --export=ALL
 
 SUFFIX="lulesh"

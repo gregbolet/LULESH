@@ -1,8 +1,8 @@
 #!/bin/bash
-#SBATCH --job-name=luleshVATest
-#SBATCH --output=luleshVA_Skip_Counters_RunData.log
+#SBATCH --job-name=luleshPATest
+#SBATCH --output=PASkip_Cntrs_variabilityStudyRunData.log
 #SBATCH --ntasks=1
-#SBATCH --time=3:00:00
+#SBATCH --time=2:00:00
 #SBATCH --export=ALL
 
 SUFFIX="lulesh"
@@ -18,7 +18,7 @@ for P in $(seq 0 $MAX_POL); do
     APOLLO_TRACE_CSV_FOLDER_SUFFIX="-$SUFFIX" OMP_NUM_THREADS=$THREAD_CAP OMP_WAIT_POLICY=active \
         APOLLO_RETRAIN_ENABLE=0 \
         APOLLO_INIT_MODEL=Static,$P \
-        APOLLO_TRACE_CSV=1 OMP_PROC_BIND=true OMP_PLACES=cores  \
+        APOLLO_TRACE_CSV=1 OMP_PROC_BIND=close OMP_PLACES=cores  \
         $PROG 
 	#|& tee log-static-$P.txt
     	#perf record --call-graph fp -- 
@@ -45,28 +45,27 @@ for BIND in $BINDINGS; do
         APOLLO_STORE_MODELS=0 \
         APOLLO_TRACE_CSV=1 OMP_PROC_BIND=$BIND OMP_PLACES=cores \
 	$PROG
-        #perf stat -e LLC-load-misses $PROG |& tee log-rr-$BIND.txt
 done
 }
 
 ANALY_DIR=~/workspace/apollo/src/python/analysis
-CSV_DIR=~/workspace/lulesh/build/B0-C0/trace-lulesh
+DATA_DIR=~/workspace/lulesh/build/runData
 
-for i in $(seq 1 50); do
-for B in $(seq 0 $BLIM); do
-    for C in $(seq 0 $CLIM); do
-        PROG="srun -n 1 ../lulesh2.0 -s 30 -r 100 -b $B -c $C -i 1000"
-        mkdir -p "B$B-C$C"
+mkdir -p "$DATA_DIR"
 
-        pushd "B$B-C$C"
-        run_static
-	    run_random
-        run_rr
-        popd
-    done
-done
+for i in $(seq 1 20); do
+    PROG="srun -n 1 ../../lulesh2.0 -s 30 -r 100 -b 0 -c 0 -i 1000"
 
-echo "[VA RUNS] Just finished run $i"
-# Do the trace analysis
-srun -n 1 $ANALY_DIR/./analyze-traces.py --dir $CSV_DIR --rr --random --nstatic 2 --nranks 1
+    RUN_DATA_DIR="$DATA_DIR/run_$i"
+    mkdir -p "$RUN_DATA_DIR"
+
+    pushd "$RUN_DATA_DIR"
+    run_static
+    run_random
+    run_rr
+    popd
+
+    echo "[Variability Runs] Just finished run $i"
+    # Do the trace analysis
+    srun -n 1 $ANALY_DIR/./analyze-traces.py --dir "$RUN_DATA_DIR/trace-lulesh" --rr --random --nstatic 2 --nranks 1
 done

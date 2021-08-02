@@ -4,11 +4,15 @@ BUILD_DIR=~/workspace/lulesh/build
 
 cd $BUILD_DIR
 
-module load clang/12.0.0
 
 # Use clang@12.0.0
+module load clang/12.0.0
 export CC=$(which clang)
 export CXX=$(which clang++)
+
+#module load gcc/10.2.1 
+#export CC=$(which gcc)
+#export CXX=$(which g++)
 
 cmake -DWITH_MPI=Off -DWITH_OPENMP=On \
       -DCMAKE_BUILD_TYPE=Release \

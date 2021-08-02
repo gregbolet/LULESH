@@ -201,7 +201,6 @@ void setNumThreads(int policy){
       /*apolloRegion = new Apollo::Region(1, REGION_NAME, NUM_POLICIES, {"PAPI_DP_OPS"}, 0);*/ \
       /*apolloRegion = new Apollo::Region(2, REGION_NAME, NUM_POLICIES, {"PAPI_DP_OPS", "PAPI_SP_OPS"}, 1);*/ \
       /*apolloRegion = new Apollo::Region(1, REGION_NAME, NUM_POLICIES, {"PAPI_DP_OPS"}, 1);*/ \
-      /*apolloRegion = new Apollo::Region(1, REGION_NAME, NUM_POLICIES);*/ \
       apolloRegion = new Apollo::Region(FEATURE_VECTOR.size(), REGION_NAME, NUM_POLICIES); \
    } \
    /* Start the Apollo region */ \
