@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --job-name=luleshApolloTest
-#SBATCH --output=../runlogs/VA_Pure_VariabilityStudyRunData3.log
+#SBATCH --output=../runlogs/PA_skip_perf_cntrs_VariabilityStudyRunData.log
 #SBATCH --ntasks=1
 #SBATCH --time=3:00:00
 #SBATCH --export=ALL
 
-DATA_DIR_NAME="VA_Pure3"
+DATA_DIR_NAME="PA_Skip_Perf_Cntrs"
 SUFFIX="lulesh"
 BLIM=0
 CLIM=0
