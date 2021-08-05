@@ -3,6 +3,8 @@
 
 # Specifically ignore the build directory
 build/
+runData/
+runlogs/
 
 # Keep c/c++ files
 !*.c

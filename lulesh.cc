@@ -210,10 +210,10 @@ void setNumThreads(int policy){
 
 
 #define startApolloThread()\
-   //apolloRegion->apolloThreadBegin();
+   apolloRegion->apolloThreadBegin();
 
 #define stopApolloThread()\
-   //apolloRegion->apolloThreadEnd();
+   apolloRegion->apolloThreadEnd();
 
 #define stopApolloRegion()\
    apolloRegion->end();}
