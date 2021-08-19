@@ -1,6 +1,8 @@
 
 # Ignore the build directory
 build/
+runlogs/
+runData/
 
 # Keep the gitignore file
 !.gitignore

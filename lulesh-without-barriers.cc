@@ -159,10 +159,6 @@ Additional BSD Notice
 # include <omp.h>
 #endif
 
-#ifdef USE_CALIPER
-   #include "caliper/cali.h"
-#endif
-
 #include "lulesh.h"
 
 /* Work Routines */
@@ -170,10 +166,6 @@ Additional BSD Notice
 static inline
 void TimeIncrement(Domain& domain)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("TimeIncrement");
-#endif
-
    Real_t targetdt = domain.stoptime() - domain.time() ;
 
    if ((domain.dtfixed() <= Real_t(0.0)) && (domain.cycle() != Int_t(0))) {
@@ -227,10 +219,6 @@ void TimeIncrement(Domain& domain)
    domain.time() += domain.deltatime() ;
 
    ++domain.cycle() ;
-
-#ifdef USE_CALIPER
-    CALI_MARK_END("TimeIncrement");
-#endif
 }
 
 /******************************************/
@@ -242,9 +230,6 @@ void CollectDomainNodesToElemNodes(Domain &domain,
                                    Real_t elemY[8],
                                    Real_t elemZ[8])
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CollectDomainNodesToElemNodes");
-#endif
    Index_t nd0i = elemToNode[0] ;
    Index_t nd1i = elemToNode[1] ;
    Index_t nd2i = elemToNode[2] ;
@@ -281,9 +266,6 @@ void CollectDomainNodesToElemNodes(Domain &domain,
    elemZ[6] = domain.z(nd6i);
    elemZ[7] = domain.z(nd7i);
 
-#ifdef USE_CALIPER
-    CALI_MARK_END("CollectDomainNodesToElemNodes");
-#endif
 }
 
 /******************************************/
@@ -293,27 +275,14 @@ void InitStressTermsForElems(Domain &domain,
                              Real_t *sigxx, Real_t *sigyy, Real_t *sigzz,
                              Index_t numElem)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("InitStressTermsForElems");
-#endif
    //
    // pull in the stresses appropriate to the hydro integration
    //
 
-
-#pragma omp parallel firstprivate(numElem)
-{
-
-#pragma omp for 
+#pragma omp parallel for firstprivate(numElem)
    for (Index_t i = 0 ; i < numElem ; ++i){
       sigxx[i] = sigyy[i] = sigzz[i] =  - domain.p(i) - domain.q(i) ;
    }
-
-}
-
-#ifdef USE_CALIPER
-    CALI_MARK_END("InitStressTermsForElems");
-#endif
 }
 
 /******************************************/
@@ -325,9 +294,6 @@ void CalcElemShapeFunctionDerivatives( Real_t const x[],
                                        Real_t b[][8],
                                        Real_t* const volume )
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcElemShapeFunctionDerivatives");
-#endif
   const Real_t x0 = x[0] ;   const Real_t x1 = x[1] ;
   const Real_t x2 = x[2] ;   const Real_t x3 = x[3] ;
   const Real_t x4 = x[4] ;   const Real_t x5 = x[5] ;
@@ -408,10 +374,6 @@ void CalcElemShapeFunctionDerivatives( Real_t const x[],
 
   /* calculate jacobian determinant (volume) */
   *volume = Real_t(8.) * ( fjxet * cjxet + fjyet * cjyet + fjzet * cjzet);
-
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcElemShapeFunctionDerivatives");
-#endif
 }
 
 /******************************************/
@@ -426,9 +388,6 @@ void SumElemFaceNormal(Real_t *normalX0, Real_t *normalY0, Real_t *normalZ0,
                        const Real_t x2, const Real_t y2, const Real_t z2,
                        const Real_t x3, const Real_t y3, const Real_t z3)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("SumElemFaceNormal");
-#endif
    Real_t bisectX0 = Real_t(0.5) * (x3 + x2 - x1 - x0);
    Real_t bisectY0 = Real_t(0.5) * (y3 + y2 - y1 - y0);
    Real_t bisectZ0 = Real_t(0.5) * (z3 + z2 - z1 - z0);
@@ -453,9 +412,6 @@ void SumElemFaceNormal(Real_t *normalX0, Real_t *normalY0, Real_t *normalZ0,
    *normalZ1 += areaZ;
    *normalZ2 += areaZ;
    *normalZ3 += areaZ;
-#ifdef USE_CALIPER
-    CALI_MARK_END("SumElemFaceNormal");
-#endif
 }
 
 /******************************************/
@@ -468,9 +424,6 @@ void CalcElemNodeNormals(Real_t pfx[8],
                          const Real_t y[8],
                          const Real_t z[8])
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcElemNodeNormals");
-#endif
    for (Index_t i = 0 ; i < 8 ; ++i) {
       pfx[i] = Real_t(0.0);
       pfy[i] = Real_t(0.0);
@@ -518,9 +471,6 @@ void CalcElemNodeNormals(Real_t pfx[8],
                   &pfx[5], &pfy[5], &pfz[5],
                   x[4], y[4], z[4], x[7], y[7], z[7],
                   x[6], y[6], z[6], x[5], y[5], z[5]);
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcElemNodeNormals");
-#endif
 }
 
 /******************************************/
@@ -532,17 +482,11 @@ void SumElemStressesToNodeForces( const Real_t B[][8],
                                   const Real_t stress_zz,
                                   Real_t fx[], Real_t fy[], Real_t fz[] )
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("SumElemStressesToNodeForces");
-#endif
    for(Index_t i = 0; i < 8; i++) {
       fx[i] = -( stress_xx * B[0][i] );
       fy[i] = -( stress_yy * B[1][i]  );
       fz[i] = -( stress_zz * B[2][i] );
    }
-#ifdef USE_CALIPER
-    CALI_MARK_END("SumElemStressesToNodeForces");
-#endif
 }
 
 /******************************************/
@@ -552,9 +496,6 @@ void IntegrateStressForElems( Domain &domain,
                               Real_t *sigxx, Real_t *sigyy, Real_t *sigzz,
                               Real_t *determ, Index_t numElem, Index_t numNode)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("IntegrateStressForElems");
-#endif
 
    Index_t numElem8 = numElem * 8 ;
    Real_t *fx_elem;
@@ -565,11 +506,10 @@ void IntegrateStressForElems( Domain &domain,
    Real_t fz_local[8] ;
    Index_t numthreads;
 
+
   // loop over all elements
-
-#pragma omp parallel 
+#pragma omp parallel
 {
-
 #pragma omp master
 {
    #if _OPENMP
@@ -630,7 +570,6 @@ void IntegrateStressForElems( Domain &domain,
   if (numthreads > 1) {
      // If threaded, then we need to copy the data out of the temporary
      // arrays used above into the final forces field
-
 #pragma omp for firstprivate(numNode)
      for( Index_t gnode=0 ; gnode<numNode ; ++gnode )
      {
@@ -649,9 +588,8 @@ void IntegrateStressForElems( Domain &domain,
         domain.fy(gnode) = fy_tmp ;
         domain.fz(gnode) = fz_tmp ;
      }
-   }
-
-}//end of parallel region
+  }
+} //end of parallel region
 
 if(numthreads > 1){
    Release(&fz_elem) ;
@@ -659,9 +597,6 @@ if(numthreads > 1){
    Release(&fx_elem) ;
 }
 
-#ifdef USE_CALIPER
-    CALI_MARK_END("IntegrateStressForElems");
-#endif
 }
 
 /******************************************/
@@ -675,9 +610,6 @@ void VoluDer(const Real_t x0, const Real_t x1, const Real_t x2,
              const Real_t z3, const Real_t z4, const Real_t z5,
              Real_t* dvdx, Real_t* dvdy, Real_t* dvdz)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("VoluDer");
-#endif
    const Real_t twelfth = Real_t(1.0) / Real_t(12.0) ;
 
    *dvdx =
@@ -697,10 +629,6 @@ void VoluDer(const Real_t x0, const Real_t x1, const Real_t x2,
    *dvdx *= twelfth;
    *dvdy *= twelfth;
    *dvdz *= twelfth;
-
-#ifdef USE_CALIPER
-    CALI_MARK_END("VoluDer");
-#endif
 }
 
 /******************************************/
@@ -713,9 +641,6 @@ void CalcElemVolumeDerivative(Real_t dvdx[8],
                               const Real_t y[8],
                               const Real_t z[8])
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcElemVolumeDerivative");
-#endif
    VoluDer(x[1], x[2], x[3], x[4], x[5], x[7],
            y[1], y[2], y[3], y[4], y[5], y[7],
            z[1], z[2], z[3], z[4], z[5], z[7],
@@ -748,9 +673,6 @@ void CalcElemVolumeDerivative(Real_t dvdx[8],
            y[6], y[5], y[4], y[3], y[2], y[0],
            z[6], z[5], z[4], z[3], z[2], z[0],
            &dvdx[7], &dvdy[7], &dvdz[7]);
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcElemVolumeDerivative");
-#endif
 }
 
 /******************************************/
@@ -760,9 +682,6 @@ void CalcElemFBHourglassForce(Real_t *xd, Real_t *yd, Real_t *zd,  Real_t hourga
                               Real_t coefficient,
                               Real_t *hgfx, Real_t *hgfy, Real_t *hgfz )
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcElemFBHourglassForce");
-#endif
    Real_t hxx[4];
    for(Index_t i = 0; i < 4; i++) {
       hxx[i] = hourgam[0][i] * xd[0] + hourgam[1][i] * xd[1] +
@@ -797,9 +716,6 @@ void CalcElemFBHourglassForce(Real_t *xd, Real_t *yd, Real_t *zd,  Real_t hourga
                 (hourgam[i][0] * hxx[0] + hourgam[i][1] * hxx[1] +
                  hourgam[i][2] * hxx[2] + hourgam[i][3] * hxx[3]);
    }
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcElemFBHourglassForce");
-#endif
 }
 
 /******************************************/
@@ -812,9 +728,6 @@ void CalcFBHourglassForceForElems( Domain &domain,
                                    Real_t hourg, Index_t numElem,
                                    Index_t numNode)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcFBHourglassForceForElems");
-#endif
 
    /*************************************************
     *
@@ -822,13 +735,13 @@ void CalcFBHourglassForceForElems( Domain &domain,
     *               force.
     *
     *************************************************/
-  
    Index_t numthreads;
    Index_t numElem8 = numElem * 8 ;
 
    Real_t *fx_elem; 
    Real_t *fy_elem; 
    Real_t *fz_elem; 
+
 
    Real_t  gamma[4][8];
 
@@ -868,8 +781,9 @@ void CalcFBHourglassForceForElems( Domain &domain,
 /*************************************************/
 /*    compute the hourglass modes */
 
-#pragma omp parallel 
+#pragma omp parallel
 {
+
 #pragma omp master
 {
    #if _OPENMP
@@ -1092,18 +1006,13 @@ void CalcFBHourglassForceForElems( Domain &domain,
          domain.fy(gnode) += fy_tmp ;
          domain.fz(gnode) += fz_tmp ;
       }
-}
-} // end of parallel region
-
-if(numthreads > 1){
+   }
+} //end of parallel region
+   if(numthreads > 1){
       Release(&fz_elem) ;
       Release(&fy_elem) ;
       Release(&fx_elem) ;
-}
-
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcFBHourglassForceForElems");
-#endif
+   }
 }
 
 /******************************************/
@@ -1112,9 +1021,6 @@ static inline
 void CalcHourglassControlForElems(Domain& domain,
                                   Real_t determ[], Real_t hgcoef)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcHourglassControlForElems");
-#endif
    Index_t numElem = domain.numElem() ;
    Index_t numElem8 = numElem * 8 ;
    Real_t *dvdx = Allocate<Real_t>(numElem8) ;
@@ -1124,11 +1030,8 @@ void CalcHourglassControlForElems(Domain& domain,
    Real_t *y8n  = Allocate<Real_t>(numElem8) ;
    Real_t *z8n  = Allocate<Real_t>(numElem8) ;
 
-
-#pragma omp parallel firstprivate(numElem)
-{
    /* start loop over elements */
-#pragma omp for
+#pragma omp parallel for firstprivate(numElem)
    for (Index_t i=0 ; i<numElem ; ++i){
       Real_t  x1[8],  y1[8],  z1[8] ;
       Real_t pfx[8], pfy[8], pfz[8] ;
@@ -1162,8 +1065,6 @@ void CalcHourglassControlForElems(Domain& domain,
       }
    }
 
-}
-
    if ( hgcoef > Real_t(0.) ) {
       CalcFBHourglassForceForElems( domain,
                                     determ, x8n, y8n, z8n, dvdx, dvdy, dvdz,
@@ -1177,9 +1078,6 @@ void CalcHourglassControlForElems(Domain& domain,
    Release(&dvdy) ;
    Release(&dvdx) ;
 
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcHourglassControlForElems");
-#endif
    return ;
 }
 
@@ -1188,9 +1086,6 @@ void CalcHourglassControlForElems(Domain& domain,
 static inline
 void CalcVolumeForceForElems(Domain& domain)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcVolumeForceForElems");
-#endif
    Index_t numElem = domain.numElem() ;
    if (numElem != 0) {
       Real_t  hgcoef = domain.hgcoef() ;
@@ -1208,10 +1103,8 @@ void CalcVolumeForceForElems(Domain& domain)
                                sigxx, sigyy, sigzz, determ, numElem,
                                domain.numNode()) ;
 
-#pragma omp parallel firstprivate(numElem)
-{
       // check for negative element volume
-#pragma omp for
+#pragma omp parallel for firstprivate(numElem)
       for ( Index_t k=0 ; k<numElem ; ++k ) {
          if (determ[k] <= Real_t(0.0)) {
 #if USE_MPI            
@@ -1221,7 +1114,6 @@ void CalcVolumeForceForElems(Domain& domain)
 #endif
          }
       }
-}
 
       CalcHourglassControlForElems(domain, determ, hgcoef) ;
 
@@ -1230,18 +1122,12 @@ void CalcVolumeForceForElems(Domain& domain)
       Release(&sigyy) ;
       Release(&sigxx) ;
    }
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcVolumeForceForElems");
-#endif
 }
 
 /******************************************/
 
 static inline void CalcForceForNodes(Domain& domain)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcForceForNodes");
-#endif
   Index_t numNode = domain.numNode() ;
 
 #if USE_MPI  
@@ -1250,16 +1136,12 @@ static inline void CalcForceForNodes(Domain& domain)
            true, false) ;
 #endif  
 
-#pragma omp parallel firstprivate(numNode)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(numNode)
   for (Index_t i=0; i<numNode; ++i) {
      domain.fx(i) = Real_t(0.0) ;
      domain.fy(i) = Real_t(0.0) ;
      domain.fz(i) = Real_t(0.0) ;
   }
-}
-
 
   /* Calcforce calls partial, force, hourq */
   CalcVolumeForceForElems(domain) ;
@@ -1275,9 +1157,6 @@ static inline void CalcForceForNodes(Domain& domain)
            true, false) ;
   CommSBN(domain, 3, fieldData) ;
 #endif  
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcForceForNodes");
-#endif
 }
 
 /******************************************/
@@ -1285,22 +1164,13 @@ static inline void CalcForceForNodes(Domain& domain)
 static inline
 void CalcAccelerationForNodes(Domain &domain, Index_t numNode)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcAccelerationForNodes");
-#endif
    
-#pragma omp parallel firstprivate(numNode)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(numNode)
    for (Index_t i = 0; i < numNode; ++i) {
       domain.xdd(i) = domain.fx(i) / domain.nodalMass(i);
       domain.ydd(i) = domain.fy(i) / domain.nodalMass(i);
       domain.zdd(i) = domain.fz(i) / domain.nodalMass(i);
    }
-}
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcAccelerationForNodes");
-#endif
 }
 
 /******************************************/
@@ -1308,9 +1178,6 @@ void CalcAccelerationForNodes(Domain &domain, Index_t numNode)
 static inline
 void ApplyAccelerationBoundaryConditionsForNodes(Domain& domain)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("ApplyAccelerationBoundaryConditionsForNodes");
-#endif
    Index_t size = domain.sizeX();
    Index_t numNodeBC = (size+1)*(size+1) ;
 
@@ -1334,9 +1201,6 @@ void ApplyAccelerationBoundaryConditionsForNodes(Domain& domain)
             domain.zdd(domain.symmZ(i)) = Real_t(0.0) ;
       }
    }
-#ifdef USE_CALIPER
-    CALI_MARK_END("ApplyAccelerationBoundaryConditionsForNodes");
-#endif
 }
 
 /******************************************/
@@ -1345,12 +1209,8 @@ static inline
 void CalcVelocityForNodes(Domain &domain, const Real_t dt, const Real_t u_cut,
                           Index_t numNode)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcVelocityForNodes");
-#endif
-#pragma omp parallel firstprivate(numNode)
-{
-#pragma omp for
+
+#pragma omp parallel for firstprivate(numNode)
    for ( Index_t i = 0 ; i < numNode ; ++i )
    {
      Real_t xdtmp, ydtmp, zdtmp ;
@@ -1368,22 +1228,13 @@ void CalcVelocityForNodes(Domain &domain, const Real_t dt, const Real_t u_cut,
      domain.zd(i) = zdtmp ;
    }
 }
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcVelocityForNodes");
-#endif
-}
 
 /******************************************/
 
 static inline
 void CalcPositionForNodes(Domain &domain, const Real_t dt, Index_t numNode)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcPositionForNodes");
-#endif
-#pragma omp parallel firstprivate(numNode)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(numNode)
    for ( Index_t i = 0 ; i < numNode ; ++i )
    {
      domain.x(i) += domain.xd(i) * dt ;
@@ -1391,20 +1242,12 @@ void CalcPositionForNodes(Domain &domain, const Real_t dt, Index_t numNode)
      domain.z(i) += domain.zd(i) * dt ;
    }
 }
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcPositionForNodes");
-#endif
-}
 
 /******************************************/
 
 static inline
 void LagrangeNodal(Domain& domain)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("LagrangeNodal");
-#endif
-
 #ifdef SEDOV_SYNC_POS_VEL_EARLY
    Domain_member fieldData[6] ;
 #endif
@@ -1447,9 +1290,6 @@ void LagrangeNodal(Domain& domain)
 #endif
 #endif
    
-#ifdef USE_CALIPER
-    CALI_MARK_END("LagrangeNodal");
-#endif
   return;
 }
 
@@ -1469,9 +1309,6 @@ Real_t CalcElemVolume( const Real_t x0, const Real_t x1,
                const Real_t z4, const Real_t z5,
                const Real_t z6, const Real_t z7 )
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcElemVolume");
-#endif
   Real_t twelveth = Real_t(1.0)/Real_t(12.0);
 
   Real_t dx61 = x6 - x1;
@@ -1540,9 +1377,6 @@ Real_t CalcElemVolume( const Real_t x0, const Real_t x1,
 
   volume *= twelveth;
 
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcElemVolume");
-#endif
   return volume ;
 }
 
@@ -1566,9 +1400,6 @@ Real_t AreaFace( const Real_t x0, const Real_t x1,
                  const Real_t z0, const Real_t z1,
                  const Real_t z2, const Real_t z3)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("AreaFace");
-#endif
    Real_t fx = (x2 - x0) - (x3 - x1);
    Real_t fy = (y2 - y0) - (y3 - y1);
    Real_t fz = (z2 - z0) - (z3 - z1);
@@ -1580,10 +1411,6 @@ Real_t AreaFace( const Real_t x0, const Real_t x1,
       (gx * gx + gy * gy + gz * gz) -
       (fx * gx + fy * gy + fz * gz) *
       (fx * gx + fy * gy + fz * gz);
-
-#ifdef USE_CALIPER
-    CALI_MARK_END("AreaFace");
-#endif
    return area ;
 }
 
@@ -1595,9 +1422,6 @@ Real_t CalcElemCharacteristicLength( const Real_t x[8],
                                      const Real_t z[8],
                                      const Real_t volume)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcElemCharacteristicLength");
-#endif
    Real_t a, charLength = Real_t(0.0);
 
    a = AreaFace(x[0],x[1],x[2],x[3],
@@ -1632,9 +1456,6 @@ Real_t CalcElemCharacteristicLength( const Real_t x[8],
 
    charLength = Real_t(4.0) * volume / SQRT(charLength);
 
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcElemCharacteristicLength");
-#endif
    return charLength;
 }
 
@@ -1648,9 +1469,6 @@ void CalcElemVelocityGradient( const Real_t* const xvel,
                                 const Real_t detJ,
                                 Real_t* const d )
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcElemVelocityGradient");
-#endif
   const Real_t inv_detJ = Real_t(1.0) / detJ ;
   Real_t dyddx, dxddy, dzddx, dxddz, dzddy, dyddz;
   const Real_t* const pfx = b[0];
@@ -1704,9 +1522,6 @@ void CalcElemVelocityGradient( const Real_t* const xvel,
   d[5]  = Real_t( .5) * ( dxddy + dyddx );
   d[4]  = Real_t( .5) * ( dxddz + dzddx );
   d[3]  = Real_t( .5) * ( dzddy + dyddz );
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcElemVelocityGradient");
-#endif
 }
 
 /******************************************/
@@ -1715,14 +1530,9 @@ void CalcElemVelocityGradient( const Real_t* const xvel,
 void CalcKinematicsForElems( Domain &domain,
                              Real_t deltaTime, Index_t numElem )
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcKinematicsForElems");
-#endif
 
-#pragma omp parallel firstprivate(numElem, deltaTime)
-{
   // loop over all elements
-#pragma omp for
+#pragma omp parallel for firstprivate(numElem, deltaTime)
   for( Index_t k=0 ; k<numElem ; ++k )
   {
     Real_t B[3][8] ; /** shape function derivatives */
@@ -1781,19 +1591,12 @@ void CalcKinematicsForElems( Domain &domain,
     domain.dzz(k) = D[2];
   }
 }
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcKinematicsForElems");
-#endif
-}
 
 /******************************************/
 
 static inline
 void CalcLagrangeElements(Domain& domain)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcLagrangeElements");
-#endif
    Index_t numElem = domain.numElem() ;
    if (numElem > 0) {
       const Real_t deltatime = domain.deltatime() ;
@@ -1803,9 +1606,7 @@ void CalcLagrangeElements(Domain& domain)
       CalcKinematicsForElems(domain, deltatime, numElem) ;
 
       // element loop to do some stuff not included in the elemlib function.
-#pragma omp parallel firstprivate(numElem)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(numElem)
       for ( Index_t k=0 ; k<numElem ; ++k )
       {
          // calc strain rate and apply as constraint (only done in FB element)
@@ -1828,12 +1629,8 @@ void CalcLagrangeElements(Domain& domain)
 #endif
         }
       }
-}
       domain.DeallocateStrains();
    }
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcLagrangeElements");
-#endif
 }
 
 /******************************************/
@@ -1841,14 +1638,9 @@ void CalcLagrangeElements(Domain& domain)
 static inline
 void CalcMonotonicQGradientsForElems(Domain& domain)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcMonotonicQGradientsForElems");
-#endif
    Index_t numElem = domain.numElem();
 
-#pragma omp parallel firstprivate(numElem)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(numElem)
    for (Index_t i = 0 ; i < numElem ; ++i ) {
       const Real_t ptiny = Real_t(1.e-36) ;
       Real_t ax,ay,az ;
@@ -1987,11 +1779,6 @@ void CalcMonotonicQGradientsForElems(Domain& domain)
 
       domain.delv_eta(i) = ax*dxv + ay*dyv + az*dzv ;
    }
-
-}
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcMonotonicQGradientsForElems");
-#endif
 }
 
 /******************************************/
@@ -2000,17 +1787,12 @@ static inline
 void CalcMonotonicQRegionForElems(Domain &domain, Int_t r,
                                   Real_t ptiny)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcMonotonicQRegionForElems");
-#endif
    Real_t monoq_limiter_mult = domain.monoq_limiter_mult();
    Real_t monoq_max_slope = domain.monoq_max_slope();
    Real_t qlc_monoq = domain.qlc_monoq();
    Real_t qqc_monoq = domain.qqc_monoq();
 
-#pragma omp parallel firstprivate(qlc_monoq, qqc_monoq, monoq_limiter_mult, monoq_max_slope, ptiny)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(qlc_monoq, qqc_monoq, monoq_limiter_mult, monoq_max_slope, ptiny)
    for ( Index_t i = 0 ; i < domain.regElemSize(r); ++i ) {
       Index_t ielem = domain.regElemlist(r,i);
       Real_t qlin, qquad ;
@@ -2163,19 +1945,11 @@ void CalcMonotonicQRegionForElems(Domain &domain, Int_t r,
    }
 }
 
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcMonotonicQRegionForElems");
-#endif
-}
-
 /******************************************/
 
 static inline
 void CalcMonotonicQForElems(Domain& domain)
 {  
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcMonotonicQForElems");
-#endif
    //
    // initialize parameters
    // 
@@ -2189,9 +1963,6 @@ void CalcMonotonicQForElems(Domain& domain)
          CalcMonotonicQRegionForElems(domain, r, ptiny) ;
       }
    }
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcMonotonicQForElems");
-#endif
 }
 
 /******************************************/
@@ -2199,9 +1970,6 @@ void CalcMonotonicQForElems(Domain& domain)
 static inline
 void CalcQForElems(Domain& domain)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcQForElems");
-#endif
    //
    // MONOTONIC Q option
    //
@@ -2264,10 +2032,6 @@ void CalcQForElems(Domain& domain)
 #endif
       }
    }
-
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcQForElems");
-#endif
 }
 
 /******************************************/
@@ -2280,22 +2044,14 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
                           Real_t p_cut, Real_t eosvmax,
                           Index_t length, Index_t *regElemList)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcPressureForElems");
-#endif
-#pragma omp parallel firstprivate(length)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(length)
    for (Index_t i = 0; i < length ; ++i) {
       Real_t c1s = Real_t(2.0)/Real_t(3.0) ;
       bvc[i] = c1s * (compression[i] + Real_t(1.));
       pbvc[i] = c1s;
    }
-}
 
-#pragma omp parallel firstprivate(length, pmin, p_cut, eosvmax)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(length, pmin, p_cut, eosvmax)
    for (Index_t i = 0 ; i < length ; ++i){
       Index_t ielem = regElemList[i];
       
@@ -2310,10 +2066,6 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
       if    (p_new[i]       <  pmin)
          p_new[i]   = pmin ;
    }
-}
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcPressureForElems");
-#endif
 }
 
 /******************************************/
@@ -2330,14 +2082,9 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
                         Real_t eosvmax,
                         Index_t length, Index_t *regElemList)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcEnergyForElems");
-#endif
    Real_t *pHalfStep = Allocate<Real_t>(length) ;
 
-#pragma omp parallel firstprivate(length, emin)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(length, emin)
    for (Index_t i = 0 ; i < length ; ++i) {
       e_new[i] = e_old[i] - Real_t(0.5) * delvc[i] * (p_old[i] + q_old[i])
          + Real_t(0.5) * work[i];
@@ -2346,20 +2093,11 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
          e_new[i] = emin ;
       }
    }
-}
 
-#ifdef USE_CALIPER
-    //CALI_MARK_BEGIN("CalcPressureForElems1");
-#endif
    CalcPressureForElems(pHalfStep, bvc, pbvc, e_new, compHalfStep, vnewc,
                         pmin, p_cut, eosvmax, length, regElemList);
-#ifdef USE_CALIPER
-    //CALI_MARK_END("CalcPressureForElems1");
-#endif
 
-#pragma omp parallel firstprivate(length, rho0)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(length, rho0)
    for (Index_t i = 0 ; i < length ; ++i) {
       Real_t vhalf = Real_t(1.) / (Real_t(1.) + compHalfStep[i]) ;
 
@@ -2383,11 +2121,8 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
          * (  Real_t(3.0)*(p_old[i]     + q_old[i])
               - Real_t(4.0)*(pHalfStep[i] + q_new[i])) ;
    }
-}
 
-#pragma omp parallel firstprivate(length, emin, e_cut)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(length, emin, e_cut)
    for (Index_t i = 0 ; i < length ; ++i) {
 
       e_new[i] += Real_t(0.5) * work[i];
@@ -2399,20 +2134,11 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
          e_new[i] = emin ;
       }
    }
-}
 
-#ifdef USE_CALIPER
-    //CALI_MARK_BEGIN("CalcPressureForElems2");
-#endif
    CalcPressureForElems(p_new, bvc, pbvc, e_new, compression, vnewc,
                         pmin, p_cut, eosvmax, length, regElemList);
-#ifdef USE_CALIPER
-    //CALI_MARK_END("CalcPressureForElems2");
-#endif
 
-#pragma omp parallel firstprivate(length, rho0, emin, e_cut)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(length, rho0, emin, e_cut)
    for (Index_t i = 0 ; i < length ; ++i){
       const Real_t sixth = Real_t(1.0) / Real_t(6.0) ;
       Index_t ielem = regElemList[i];
@@ -2445,20 +2171,11 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
          e_new[i] = emin ;
       }
    }
-}
 
-#ifdef USE_CALIPER
-    //CALI_MARK_BEGIN("CalcPressureForElems3");
-#endif
    CalcPressureForElems(p_new, bvc, pbvc, e_new, compression, vnewc,
                         pmin, p_cut, eosvmax, length, regElemList);
-#ifdef USE_CALIPER
-    //CALI_MARK_END("CalcPressureForElems3");
-#endif
 
-#pragma omp parallel firstprivate(length, rho0, q_cut)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(length, rho0, q_cut)
    for (Index_t i = 0 ; i < length ; ++i){
       Index_t ielem = regElemList[i];
 
@@ -2478,13 +2195,8 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
       }
    }
 
-}
    Release(&pHalfStep) ;
 
-
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcEnergyForElems");
-#endif
    return ;
 }
 
@@ -2497,12 +2209,7 @@ void CalcSoundSpeedForElems(Domain &domain,
                             Real_t *bvc, Real_t ss4o3,
                             Index_t len, Index_t *regElemList)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcSoundSpeedForElems");
-#endif
-#pragma omp parallel firstprivate(rho0, ss4o3)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(rho0, ss4o3)
    for (Index_t i = 0; i < len ; ++i) {
       Index_t ielem = regElemList[i];
       Real_t ssTmp = (pbvc[i] * enewc[i] + vnewc[ielem] * vnewc[ielem] *
@@ -2516,10 +2223,6 @@ void CalcSoundSpeedForElems(Domain &domain,
       domain.ss(ielem) = ssTmp ;
    }
 }
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcSoundSpeedForElems");
-#endif
-}
 
 /******************************************/
 
@@ -2527,9 +2230,6 @@ static inline
 void EvalEOSForElems(Domain& domain, Real_t *vnewc,
                      Int_t numElemReg, Index_t *regElemList, Int_t rep)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("EvalEOSForElems");
-#endif
    Real_t  e_cut = domain.e_cut() ;
    Real_t  p_cut = domain.p_cut() ;
    Real_t  ss4o3 = domain.ss4o3() ;
@@ -2610,7 +2310,6 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
          for (Index_t i = 0 ; i < numElemReg ; ++i) {
             work[i] = Real_t(0.) ; 
          }
-
       }
       CalcEnergyForElems(p_new, e_new, q_new, bvc, pbvc,
                          p_old, e_old,  q_old, compression, compHalfStep,
@@ -2620,16 +2319,13 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
                          numElemReg, regElemList);
    }
 
-#pragma omp parallel firstprivate(numElemReg)
-{
-#pragma omp for 
+#pragma omp parallel for firstprivate(numElemReg)
    for (Index_t i=0; i<numElemReg; ++i) {
       Index_t ielem = regElemList[i];
       domain.p(ielem) = p_new[i] ;
       domain.e(ielem) = e_new[i] ;
       domain.q(ielem) = q_new[i] ;
    }
-}
 
    CalcSoundSpeedForElems(domain,
                           vnewc, rho0, e_new, p_new,
@@ -2650,10 +2346,6 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
    Release(&p_old) ;
    Release(&delvc) ;
    Release(&e_old) ;
-
-#ifdef USE_CALIPER
-    CALI_MARK_END("EvalEOSForElems");
-#endif
 }
 
 /******************************************/
@@ -2661,9 +2353,6 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
 static inline
 void ApplyMaterialPropertiesForElems(Domain& domain)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("ApplyMaterialPropertiesForElems");
-#endif
    Index_t numElem = domain.numElem() ;
 
   if (numElem != 0) {
@@ -2739,10 +2428,6 @@ void ApplyMaterialPropertiesForElems(Domain& domain)
 
     Release(&vnewc) ;
   }
-
-#ifdef USE_CALIPER
-    CALI_MARK_END("ApplyMaterialPropertiesForElems");
-#endif
 }
 
 /******************************************/
@@ -2751,13 +2436,8 @@ static inline
 void UpdateVolumesForElems(Domain &domain,
                            Real_t v_cut, Index_t length)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("UpdateVolumesForElems");
-#endif
    if (length != 0) {
-#pragma omp parallel firstprivate(length, v_cut)
-{
-#pragma omp for
+#pragma omp parallel for firstprivate(length, v_cut)
       for(Index_t i=0 ; i<length ; ++i) {
          Real_t tmpV = domain.vnew(i) ;
 
@@ -2766,12 +2446,8 @@ void UpdateVolumesForElems(Domain &domain,
 
          domain.v(i) = tmpV ;
       }
-}
    }
 
-#ifdef USE_CALIPER
-    CALI_MARK_END("UpdateVolumesForElems");
-#endif
    return ;
 }
 
@@ -2780,10 +2456,6 @@ void UpdateVolumesForElems(Domain &domain,
 static inline
 void LagrangeElements(Domain& domain, Index_t numElem)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("LagrangeElements");
-#endif
-
   CalcLagrangeElements(domain) ;
 
   /* Calculate Q.  (Monotonic q option requires communication) */
@@ -2793,10 +2465,6 @@ void LagrangeElements(Domain& domain, Index_t numElem)
 
   UpdateVolumesForElems(domain, 
                         domain.v_cut(), numElem) ;
-
-#ifdef USE_CALIPER
-    CALI_MARK_END("LagrangeElements");
-#endif
 }
 
 /******************************************/
@@ -2806,14 +2474,11 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
                                    Index_t *regElemlist,
                                    Real_t qqc, Real_t& dtcourant)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcCourantConstraintForElems");
-#endif
-
    Index_t threads;
    Index_t* courant_elem_per_thread;
    Real_t*  dtcourant_per_thread;
-   
+
+
 #pragma omp parallel firstprivate(length, qqc)
    {
 #pragma omp master
@@ -2866,7 +2531,6 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
       courant_elem_per_thread[thread_num] = courant_elem ;
    }
 
-
    for (Index_t i = 1; i < threads; ++i) {
       if (dtcourant_per_thread[i] < dtcourant_per_thread[0] ) {
          dtcourant_per_thread[0]    = dtcourant_per_thread[i];
@@ -2881,9 +2545,6 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
    delete [] dtcourant_per_thread;
    delete [] courant_elem_per_thread;
 
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcCourantConstraintForElems");
-#endif
    return ;
 
 }
@@ -2894,9 +2555,6 @@ static inline
 void CalcHydroConstraintForElems(Domain &domain, Index_t length,
                                  Index_t *regElemlist, Real_t dvovmax, Real_t& dthydro)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcHydroConstraintForElems");
-#endif
 
    Index_t threads;
    Index_t* hydro_elem_per_thread;
@@ -2904,7 +2562,6 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
 
 #pragma omp parallel firstprivate(length, dvovmax)
    {
-
 #pragma omp master
 {
 
@@ -2918,6 +2575,7 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
 }
 
 #pragma omp barrier
+
       Real_t dthydro_tmp = dthydro ;
       Index_t hydro_elem = -1 ;
 
@@ -2959,9 +2617,6 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
    delete [] dthydro_per_thread;
    delete [] hydro_elem_per_thread;
 
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcHydroConstraintForElems");
-#endif
    return ;
 }
 
@@ -2970,9 +2625,6 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
 static inline
 void CalcTimeConstraintsForElems(Domain& domain) {
 
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("CalcTimeConstraintsForElems");
-#endif
    // Initialize conditions to a very large value
    domain.dtcourant() = 1.0e+20;
    domain.dthydro() = 1.0e+20;
@@ -2990,9 +2642,6 @@ void CalcTimeConstraintsForElems(Domain& domain) {
                                   domain.dvovmax(),
                                   domain.dthydro()) ;
    }
-#ifdef USE_CALIPER
-    CALI_MARK_END("CalcTimeConstraintsForElems");
-#endif
 }
 
 /******************************************/
@@ -3000,10 +2649,6 @@ void CalcTimeConstraintsForElems(Domain& domain) {
 static inline
 void LagrangeLeapFrog(Domain& domain)
 {
-#ifdef USE_CALIPER
-    CALI_MARK_BEGIN("LagrangeLeapFrog");
-#endif
-
 #ifdef SEDOV_SYNC_POS_VEL_LATE
    Domain_member fieldData[6] ;
 #endif
@@ -3046,20 +2691,13 @@ void LagrangeLeapFrog(Domain& domain)
    CommSyncPosVel(domain) ;
 #endif
 #endif   
-
-#ifdef USE_CALIPER
-    CALI_MARK_END("LagrangeLeapFrog");
-#endif
 }
 
 
 /******************************************/
-// Make these global for the purpose of not having to pass pointers around
 
 int main(int argc, char *argv[])
 {
-
-
    Domain *locDom ;
    int numRanks ;
    int myRank ;
@@ -3087,7 +2725,7 @@ int main(int argc, char *argv[])
 #else
    numRanks = 1;
    myRank = 0;
-#endif  // end of USE_MPI 
+#endif   
 
    /* Set defaults that can be overridden by command line opts */
    opts.its = 9999999;
@@ -3100,7 +2738,6 @@ int main(int argc, char *argv[])
    opts.balance = 1;
    opts.cost = 1;
 
-
    ParseCommandLineOptions(argc, argv, myRank, &opts);
 
    if ((myRank == 0) && (opts.quiet == 0)) {
@@ -3109,7 +2746,6 @@ int main(int argc, char *argv[])
 #if _OPENMP
       std::cout << "Num threads: " << omp_get_max_threads() << "\n";
 #endif
-
       std::cout << "Total number of elements: " << ((Int8_t)numRanks*opts.nx*opts.nx*opts.nx) << " \n\n";
       std::cout << "To run other sizes, use -s <integer>.\n";
       std::cout << "To run a fixed number of iterations, use -i <integer>.\n";
@@ -3120,12 +2756,6 @@ int main(int argc, char *argv[])
       std::cout << "See help (-h) for more options\n\n";
    }
 
-
-#ifdef USE_CALIPER
-   cali_config_set("CALI_CALIPER_ATTRIBUTE_DEFAULT_SCOPE", "thread");
-   CALI_MARK_BEGIN("main-region");
-#endif
-
    // Set up the mesh and decompose. Assumes regular cubes for now
    Int_t col, row, plane, side;
    InitMeshDecomp(numRanks, myRank, &col, &row, &plane, &side);
@@ -3133,7 +2763,6 @@ int main(int argc, char *argv[])
    // Build the main data structure and initialize it
    locDom = new Domain(numRanks, col, row, plane, opts.nx,
                        side, opts.numReg, opts.balance, opts.cost) ;
-
 
 
 #if USE_MPI   
@@ -3159,7 +2788,6 @@ int main(int argc, char *argv[])
    timeval start;
    gettimeofday(&start, NULL) ;
 #endif
-
 //debug to see region sizes
 //   for(Int_t i = 0; i < locDom->numReg(); i++)
 //      std::cout << "region" << i + 1<< "size" << locDom->regElemSize(i) <<std::endl;
@@ -3175,7 +2803,6 @@ int main(int argc, char *argv[])
                    << "dt="     << double(locDom->deltatime()) << "\n";
          std::cout.unsetf(std::ios_base::floatfield);
       }
-      
    }
 
    // Use reduced max elapsed time
@@ -3209,11 +2836,6 @@ int main(int argc, char *argv[])
 #if USE_MPI
    MPI_Finalize() ;
 #endif
-
-#ifdef USE_CALIPER
-    CALI_MARK_END("main-region");
-#endif
-
 
    return 0 ;
 }

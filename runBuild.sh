@@ -3,7 +3,7 @@ LLVM_INSTALL=/g/g15/bolet1/workspace/clang-apollo/llvm-project/build-release-qua
 APOLLO_INSTALL=/g/g15/bolet1/workspace/apollo/build/install
 #APOLLO_INSTALL=/p/vast1/ggeorgak/projects/apollo/apollo/build-quartz-nompi/install
 
-export CXXFLAGS="-fopenmp -Xclang -load -Xclang ${LLVM_INSTALL}/../lib/LLVMApollo.so -mllvm --apollo-omp-numthreads=1 -march=native"
+export CXXFLAGS="-fopenmp -Xclang -load -Xclang ${LLVM_INSTALL}/../lib/LLVMApollo.so -mllvm --apollo-omp-numthreads=36,1 -march=native"
 export LDFLAGS="-L ${APOLLO_INSTALL}/lib -Wl,--rpath,${APOLLO_INSTALL}/lib -lapollo -Wl,--rpath,${LLVM_INSTALL}/lib"
 #export LDFLAGS="-L ${APOLLO_INSTALL}/lib -Wl,--rpath,${APOLLO_INSTALL}/lib -lapollo -Wl,--rpath,${LLVM_INSTALL}/lib"
     #-DCMAKE_CXX_FLAGS=${CXXFLAGS} \

@@ -1,0 +1,354 @@
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+~/workspace/lulesh-region-fix-correct/LULESH
+[VA RUNS] Just finished run 1
+=== Reading csv files...
+Traceback (most recent call last):
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 279, in <module>
+    main()
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 149, in main
+    data_map['Static'] = pd.concat(csv_map.values(), ignore_index=True, sort=True)
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 244, in concat
+    op = _Concatenator(
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 304, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+srun: error: quartz413: task 0: Exited with exit code 1
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+~/workspace/lulesh-region-fix-correct/LULESH
+[VA RUNS] Just finished run 2
+=== Reading csv files...
+Traceback (most recent call last):
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 279, in <module>
+    main()
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 149, in main
+    data_map['Static'] = pd.concat(csv_map.values(), ignore_index=True, sort=True)
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 244, in concat
+    op = _Concatenator(
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 304, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+srun: error: quartz413: task 0: Exited with exit code 1
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+~/workspace/lulesh-region-fix-correct/LULESH
+[VA RUNS] Just finished run 3
+=== Reading csv files...
+Traceback (most recent call last):
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 279, in <module>
+    main()
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 149, in main
+    data_map['Static'] = pd.concat(csv_map.values(), ignore_index=True, sort=True)
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 244, in concat
+    op = _Concatenator(
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 304, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+srun: error: quartz413: task 0: Exited with exit code 1
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+~/workspace/lulesh-region-fix-correct/LULESH
+[VA RUNS] Just finished run 4
+=== Reading csv files...
+Traceback (most recent call last):
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 279, in <module>
+    main()
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 149, in main
+    data_map['Static'] = pd.concat(csv_map.values(), ignore_index=True, sort=True)
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 244, in concat
+    op = _Concatenator(
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 304, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+srun: error: quartz413: task 0: Exited with exit code 1
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+~/workspace/lulesh-region-fix-correct/LULESH
+[VA RUNS] Just finished run 5
+=== Reading csv files...
+Traceback (most recent call last):
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 279, in <module>
+    main()
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 149, in main
+    data_map['Static'] = pd.concat(csv_map.values(), ignore_index=True, sort=True)
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 244, in concat
+    op = _Concatenator(
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 304, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+srun: error: quartz413: task 0: Exited with exit code 1
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+~/workspace/lulesh-region-fix-correct/LULESH
+[VA RUNS] Just finished run 6
+=== Reading csv files...
+Traceback (most recent call last):
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 279, in <module>
+    main()
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 149, in main
+    data_map['Static'] = pd.concat(csv_map.values(), ignore_index=True, sort=True)
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 244, in concat
+    op = _Concatenator(
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 304, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+srun: error: quartz413: task 0: Exited with exit code 1
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+~/workspace/lulesh-region-fix-correct/LULESH
+[VA RUNS] Just finished run 7
+=== Reading csv files...
+Traceback (most recent call last):
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 279, in <module>
+    main()
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 149, in main
+    data_map['Static'] = pd.concat(csv_map.values(), ignore_index=True, sort=True)
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 244, in concat
+    op = _Concatenator(
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 304, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+srun: error: quartz413: task 0: Exited with exit code 1
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+~/workspace/lulesh-region-fix-correct/LULESH
+[VA RUNS] Just finished run 8
+=== Reading csv files...
+Traceback (most recent call last):
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 279, in <module>
+    main()
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 149, in main
+    data_map['Static'] = pd.concat(csv_map.values(), ignore_index=True, sort=True)
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 244, in concat
+    op = _Concatenator(
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 304, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+srun: error: quartz413: task 0: Exited with exit code 1
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+~/workspace/lulesh-region-fix-correct/LULESH
+[VA RUNS] Just finished run 9
+=== Reading csv files...
+Traceback (most recent call last):
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 279, in <module>
+    main()
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 149, in main
+    data_map['Static'] = pd.concat(csv_map.values(), ignore_index=True, sort=True)
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 244, in concat
+    op = _Concatenator(
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 304, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+srun: error: quartz413: task 0: Exited with exit code 1
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+~/workspace/lulesh-region-fix-correct/LULESH
+[VA RUNS] Just finished run 10
+=== Reading csv files...
+Traceback (most recent call last):
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 279, in <module>
+    main()
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 149, in main
+    data_map['Static'] = pd.concat(csv_map.values(), ignore_index=True, sort=True)
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 244, in concat
+    op = _Concatenator(
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 304, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+srun: error: quartz413: task 0: Exited with exit code 1
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+~/workspace/lulesh-region-fix-correct/LULESH
+[VA RUNS] Just finished run 11
+=== Reading csv files...
+Traceback (most recent call last):
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 279, in <module>
+    main()
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 149, in main
+    data_map['Static'] = pd.concat(csv_map.values(), ignore_index=True, sort=True)
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 244, in concat
+    op = _Concatenator(
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 304, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+srun: error: quartz413: task 0: Exited with exit code 1
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+~/workspace/lulesh-region-fix-correct/LULESH
+[VA RUNS] Just finished run 12
+=== Reading csv files...
+Traceback (most recent call last):
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 279, in <module>
+    main()
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 149, in main
+    data_map['Static'] = pd.concat(csv_map.values(), ignore_index=True, sort=True)
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 244, in concat
+    op = _Concatenator(
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 304, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+srun: error: quartz413: task 0: Exited with exit code 1
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+~/workspace/lulesh-region-fix-correct/LULESH
+[VA RUNS] Just finished run 13
+=== Reading csv files...
+Traceback (most recent call last):
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 279, in <module>
+    main()
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 149, in main
+    data_map['Static'] = pd.concat(csv_map.values(), ignore_index=True, sort=True)
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 244, in concat
+    op = _Concatenator(
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 304, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+srun: error: quartz413: task 0: Exited with exit code 1
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+close
+slurmstepd: error: execve(): /usr/WS2/bolet1/lulesh-region-fix-correct/LULESH/B0-C0/../lulesh2.0: No such file or directory
+srun: error: quartz413: task 0: Exited with exit code 2
+~/workspace/lulesh-region-fix-correct/LULESH
+[VA RUNS] Just finished run 14
+=== Reading csv files...
+Traceback (most recent call last):
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 279, in <module>
+    main()
+  File "/g/g15/bolet1/workspace/apollo/src/python/analysis/./analyze-traces.py", line 149, in main
+    data_map['Static'] = pd.concat(csv_map.values(), ignore_index=True, sort=True)
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 244, in concat
+    op = _Concatenator(
+  File "/usr/tce/packages/python/python-3.8.2/lib/python3.8/site-packages/pandas/core/reshape/concat.py", line 304, in __init__
+    raise ValueError("No objects to concatenate")
+ValueError: No objects to concatenate
+srun: error: quartz413: task 0: Exited with exit code 1
+~/workspace/lulesh-region-fix-correct/LULESH/B0-C0 ~/workspace/lulesh-region-fix-correct/LULESH
+slurmstepd: error: *** STEP 7182345.70 ON quartz413 CANCELLED AT 2021-07-28T06:47:10 ***
+slurmstepd: error: *** JOB 7182345 ON quartz413 CANCELLED AT 2021-07-28T06:47:10 ***
+srun: Job step aborted: Waiting up to 62 seconds for job step to finish.
