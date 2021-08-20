@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=luleshApolloTest
-#SBATCH --output=../runlogs/PA_2Cntr_DP_SP_OPS_yes_mltpx_VariabilityStudyRunData.log
+#SBATCH --output=../runlogs/PA_Skip_Cntrs_Apollo_C_API_VariabilityStudyRunData.log
 #SBATCH --open-mode=truncate
 #SBATCH --ntasks=1
 #SBATCH --time=3:00:00
 #SBATCH --export=ALL
 
-DATA_DIR_NAME="PA_2Cntr_DP_SP_OPS_yes_mltpx"
+DATA_DIR_NAME="PA_Skip_Cntrs_Apollo_C_API"
 SUFFIX="lulesh"
 BLIM=0
 CLIM=0
@@ -14,7 +14,7 @@ MAX_POL=1
 BINDINGS="close"
 APOLLO_PERIOD=10000
 THREAD_CAP=36
-ENABLE_PERF_CNTRS=1
+ENABLE_PERF_CNTRS=0
 PERF_CNTRS="PAPI_DP_OPS,PAPI_SP_OPS"
 MLTPX_ENABLED=1
 

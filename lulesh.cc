@@ -165,7 +165,6 @@ Additional BSD Notice
    #include "apollo/Region.h"
 
    #define NUM_POLICIES 2
-   //#define NUM_POLICIES 7
 
    Apollo* apollo;
 
@@ -178,18 +177,7 @@ void setNumThreads(int policy){
       case 1: num_threads = 1; break;
       default: num_threads = 36;
    }
-/*
-   switch(policy){
-      case 0: num_threads = 1; break;
-      case 1: num_threads = 2; break;
-      case 2: num_threads = 4; break;
-      case 3: num_threads = 9; break;
-      case 4: num_threads = 18; break;
-      case 5: num_threads = 36; break;
-      case 6: num_threads = 72; break;
-      default: num_threads = 1;
-   }
-*/
+
    // Set the thread count according to policy
    omp_set_num_threads(num_threads);
 }
@@ -198,19 +186,26 @@ void setNumThreads(int policy){
 #define startApolloRegion(REGION_NAME, FEATURE_VECTOR)\
    {static Apollo::Region* apolloRegion = nullptr; \
    if(!apolloRegion){ \
-      apolloRegion = new Apollo::Region(FEATURE_VECTOR.size(), REGION_NAME, NUM_POLICIES); \
+      /*apolloRegion = new Apollo::Region(FEATURE_VECTOR.size(), REGION_NAME, NUM_POLICIES);*/ \
+      static const char* regionName = REGION_NAME; \
+      apolloRegion = (Apollo::Region*) __apollo_region_create(FEATURE_VECTOR.size(), (char *)regionName, NUM_POLICIES); \
    } \
    /* Start the Apollo region */ \
-   apolloRegion->begin(FEATURE_VECTOR); \
+   /*apolloRegion->begin(FEATURE_VECTOR);*/ \
+   __apollo_region_begin(apolloRegion); \
+   for(std::size_t i = 0; i < FEATURE_VECTOR.size(); ++i){ \
+      __apollo_region_set_feature(apolloRegion, FEATURE_VECTOR[i]); \
+   } \
    /* Set the number of OMP threads based on the policy */ \
-   setNumThreads(apolloRegion->getPolicyIndex());
+   /*setNumThreads(apolloRegion->getPolicyIndex());*/ \
+   setNumThreads(__apollo_region_get_policy(apolloRegion));
 
 
 #define startApolloThread()\
-   apolloRegion->apolloThreadBegin();
+   //apolloRegion->apolloThreadBegin();
 
 #define stopApolloThread()\
-   apolloRegion->apolloThreadEnd();
+   //apolloRegion->apolloThreadEnd();
 
 #define stopApolloRegion()\
    apolloRegion->end();}
@@ -3599,17 +3594,6 @@ int main(int argc, char *argv[])
          std::cout.unsetf(std::ios_base::floatfield);
       }
       
-      #ifdef USE_APOLLO
-         //std::cout << "TRAINING! " << locDom->cycle() << std::endl;
-         // Reduce best measures and Build a tree from the measurements
-         //if(locDom->cycle() % 2 == 0){
-            //::apollo->train(locDom->cycle() / 2);
-         //}
-         //int numExecs = ::apollo->getRegionExecutions();
-         //if(numExecs%opts.trainInterval == 0){
-            //::apollo->train((int) numExecs/opts.trainInterval);
-         //}
-      #endif
    }
 
    // Use reduced max elapsed time
