@@ -169,7 +169,7 @@ Additional BSD Notice
    Apollo* apollo;
 
 static inline
-void setNumThreads(int policy){
+void setNumThreads(int policy) noexcept{
    int num_threads;
 
    switch(policy){
@@ -202,13 +202,16 @@ void setNumThreads(int policy){
 
 
 #define startApolloThread()\
-   apolloRegion->apolloThreadBegin();
+   /*apolloRegion->apolloThreadBegin();*/ \
+   __apollo_region_thread_begin(apolloRegion);
 
 #define stopApolloThread()\
-   apolloRegion->apolloThreadEnd();
+   /*apolloRegion->apolloThreadEnd();*/ \
+   __apollo_region_thread_end(apolloRegion);
 
 #define stopApolloRegion()\
-   apolloRegion->end();}
+   /*apolloRegion->end();}*/ \
+   __apollo_region_end(apolloRegion);}
 
 #endif // end USE_APOLLO
 
@@ -3522,9 +3525,6 @@ int main(int argc, char *argv[])
       std::cout << "Num threads: " << omp_get_max_threads() << "\n";
 #endif
 
-#ifdef USE_APOLLO
-      //std::cout << "Training Interval: " << opts.trainInterval << std::endl;
-#endif
       std::cout << "Total number of elements: " << ((Int8_t)numRanks*opts.nx*opts.nx*opts.nx) << " \n\n";
       std::cout << "To run other sizes, use -s <integer>.\n";
       std::cout << "To run a fixed number of iterations, use -i <integer>.\n";

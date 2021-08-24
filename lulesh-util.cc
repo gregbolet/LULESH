@@ -43,9 +43,6 @@ static void PrintCommandLineOptions(char *execname, int myRank)
       printf(" -f <numfiles>   : Number of files to split viz dump into (def: (np+10)/9)\n");
       printf(" -p              : Print out progress\n");
       printf(" -v              : Output viz file (requires compiling with -DVIZ_MESH\n");
-#ifdef USE_APOLLO
-      printf(" -t              : Apollo training interval\n");
-#endif
       printf(" -h              : This message\n");
       printf("\n\n");
    }
@@ -120,19 +117,6 @@ void ParseCommandLineOptions(int argc, char *argv[],
             opts->showProg = 1;
             i++;
          }
-#ifdef USE_APOLLO
-         /* -t */
-         //else if (strcmp(argv[i], "-t") == 0) {
-            //if (i+1 >= argc) {
-               //ParseError("Missing integer argument to -t\n", myRank);
-            //}
-            //ok = StrToInt(argv[i+1], &(opts->trainInterval));
-            //if (!ok) {
-               //ParseError("Parse Error on option -t integer value required after argument\n", myRank);
-            //}
-            //i+=2;
-         //}
-#endif
          /* -q */
          else if (strcmp(argv[i], "-q") == 0) {
             opts->quiet = 1;

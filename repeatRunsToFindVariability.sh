@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=luleshApolloTest
-#SBATCH --output=../runlogs/PA_DP_OPS_No_Mltpx_Apollo_C_API_VariabilityStudyRunData.log
+#SBATCH --output=../runlogs/PA_DP_SP_OPS_Yes_Mltpx_Apollo_C_API_VariabilityStudyRunData.log
 #SBATCH --open-mode=truncate
 #SBATCH --ntasks=1
 #SBATCH --time=3:00:00
 #SBATCH --export=ALL
 
-DATA_DIR_NAME="PA_DP_OPS_No_Mltpx_Apollo_C_API"
+DATA_DIR_NAME="PA_DP_SP_OPS_Yes_Mltpx_Apollo_C_API"
 SUFFIX="lulesh"
 BLIM=0
 CLIM=0
@@ -15,8 +15,8 @@ BINDINGS="close"
 APOLLO_PERIOD=10000
 THREAD_CAP=36
 ENABLE_PERF_CNTRS=1
-PERF_CNTRS="PAPI_DP_OPS"
-MLTPX_ENABLED=0
+PERF_CNTRS="PAPI_DP_OPS,PAPI_SP_OPS"
+MLTPX_ENABLED=1
 
 function run_static() {
 for P in $(seq 0 $MAX_POL); do
