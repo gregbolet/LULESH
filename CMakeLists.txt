@@ -105,4 +105,4 @@ set(LULESH_EXEC lulesh2.0)
 add_executable(${LULESH_EXEC} ${LULESH_SOURCES})
 target_link_libraries(${LULESH_EXEC} ${LULESH_EXTERNAL_LIBS})
 
-#target_compile_options(${LULESH_EXEC} PRIVATE -g0 -emit-llvm -S)
+target_compile_options(${LULESH_EXEC} PRIVATE -g0 -emit-llvm -S)
