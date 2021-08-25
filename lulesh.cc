@@ -189,21 +189,18 @@ void setNumThreads(int policy) noexcept{
    /* Start the Apollo region */ \
    __apollo_region_begin(apolloRegion);
 
-
 #define setRegionFeature(FEATURE_VAL)\
    __apollo_region_set_feature(apolloRegion, FEATURE_VAL);
-
 
 #define setRegionNumThreads()\
    /* Set the number of OMP threads based on the policy */ \
    setNumThreads(__apollo_region_get_policy(apolloRegion));
 
-
 #define startApolloThread()\
-   __apollo_region_thread_begin(apolloRegion);
+   //__apollo_region_thread_begin(apolloRegion);
 
 #define stopApolloThread()\
-   __apollo_region_thread_end(apolloRegion);
+   //__apollo_region_thread_end(apolloRegion);
 
 #define stopApolloRegion()\
    __apollo_region_end(apolloRegion);}
