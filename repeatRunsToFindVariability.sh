@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=luleshTest
-#SBATCH --output=../runlogs/VA_Clang_With_Barriers_VariabilityStudyRunData.log
+#SBATCH --output=../runlogs/VA_Clang_C_API_use_omp_set_num_threads_VariabilityStudyRunData.log
 #SBATCH --open-mode=truncate
 #SBATCH --ntasks=1
-#SBATCH --time=3:00:00
+#SBATCH --time=2:00:00
 #SBATCH --export=ALL
 
-DATA_DIR_NAME="VA_Clang_With_Barriers"
+DATA_DIR_NAME="VA_Clang_C_API_use_omp_set_num_threads"
 SUFFIX="lulesh"
 BLIM=0
 CLIM=0
