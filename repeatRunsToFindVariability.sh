@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=luleshApolloTest
-#SBATCH --output=../runlogs/PA_Skip_Cntrs_C_API_VariabilityStudyRunData.log
+#SBATCH --output=../runlogs/VA_C_API_unrolledLoops_VariabilityStudyRunData.log
 #SBATCH --open-mode=truncate
 #SBATCH --ntasks=1
 #SBATCH --time=2:00:00
 #SBATCH --export=ALL
 
-DATA_DIR_NAME="PA_Skip_Cntrs_C_API"
+DATA_DIR_NAME="VA_C_API_unrolledLoops"
 SUFFIX="lulesh"
 BLIM=0
 CLIM=0

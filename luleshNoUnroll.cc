@@ -360,8 +360,7 @@ void InitStressTermsForElems(Domain &domain,
    startApolloThread();
 #endif
 
-#pragma omp for
-#pragma unroll(4)
+#pragma omp for 
    for (Index_t i = 0 ; i < numElem ; ++i){
       sigxx[i] = sigyy[i] = sigzz[i] =  - domain.p(i) - domain.q(i) ;
    }
@@ -534,7 +533,6 @@ void CalcElemNodeNormals(Real_t pfx[8],
 #ifdef USE_CALIPER
     CALI_MARK_BEGIN("CalcElemNodeNormals");
 #endif
-#pragma unroll(8)
    for (Index_t i = 0 ; i < 8 ; ++i) {
       pfx[i] = Real_t(0.0);
       pfy[i] = Real_t(0.0);
@@ -599,7 +597,6 @@ void SumElemStressesToNodeForces( const Real_t B[][8],
 #ifdef USE_CALIPER
     CALI_MARK_BEGIN("SumElemStressesToNodeForces");
 #endif
-#pragma unroll(8)
    for(Index_t i = 0; i < 8; i++) {
       fx[i] = -( stress_xx * B[0][i] );
       fy[i] = -( stress_yy * B[1][i]  );
@@ -688,7 +685,6 @@ void IntegrateStressForElems( Domain &domain,
                                     fx_local, fy_local, fz_local ) ;
 
        // copy nodal force contributions to global force arrray.
-#pragma unroll(8)
        for( Index_t lnode=0 ; lnode<8 ; ++lnode ) {
           Index_t gnode = elemToNode[lnode];
           domain.fx(gnode) += fx_local[lnode];
@@ -710,7 +706,6 @@ void IntegrateStressForElems( Domain &domain,
         Real_t fx_tmp = Real_t(0.0) ;
         Real_t fy_tmp = Real_t(0.0) ;
         Real_t fz_tmp = Real_t(0.0) ;
-#pragma unroll(4)
         for (Index_t i=0 ; i < count ; ++i) {
            Index_t ielem = cornerList[i] ;
            fx_tmp += fx_elem[ielem] ;
@@ -843,40 +838,34 @@ void CalcElemFBHourglassForce(Real_t *xd, Real_t *yd, Real_t *zd,  Real_t hourga
     CALI_MARK_BEGIN("CalcElemFBHourglassForce");
 #endif
    Real_t hxx[4];
-#pragma unroll(4)
    for(Index_t i = 0; i < 4; i++) {
       hxx[i] = hourgam[0][i] * xd[0] + hourgam[1][i] * xd[1] +
                hourgam[2][i] * xd[2] + hourgam[3][i] * xd[3] +
                hourgam[4][i] * xd[4] + hourgam[5][i] * xd[5] +
                hourgam[6][i] * xd[6] + hourgam[7][i] * xd[7];
    }
-#pragma unroll(8)
    for(Index_t i = 0; i < 8; i++) {
       hgfx[i] = coefficient *
                 (hourgam[i][0] * hxx[0] + hourgam[i][1] * hxx[1] +
                  hourgam[i][2] * hxx[2] + hourgam[i][3] * hxx[3]);
    }
-#pragma unroll(4)
    for(Index_t i = 0; i < 4; i++) {
       hxx[i] = hourgam[0][i] * yd[0] + hourgam[1][i] * yd[1] +
                hourgam[2][i] * yd[2] + hourgam[3][i] * yd[3] +
                hourgam[4][i] * yd[4] + hourgam[5][i] * yd[5] +
                hourgam[6][i] * yd[6] + hourgam[7][i] * yd[7];
    }
-#pragma unroll(8)
    for(Index_t i = 0; i < 8; i++) {
       hgfy[i] = coefficient *
                 (hourgam[i][0] * hxx[0] + hourgam[i][1] * hxx[1] +
                  hourgam[i][2] * hxx[2] + hourgam[i][3] * hxx[3]);
    }
-#pragma unroll(4)
    for(Index_t i = 0; i < 4; i++) {
       hxx[i] = hourgam[0][i] * zd[0] + hourgam[1][i] * zd[1] +
                hourgam[2][i] * zd[2] + hourgam[3][i] * zd[3] +
                hourgam[4][i] * zd[4] + hourgam[5][i] * zd[5] +
                hourgam[6][i] * zd[6] + hourgam[7][i] * zd[7];
    }
-#pragma unroll(8)
    for(Index_t i = 0; i < 8; i++) {
       hgfz[i] = coefficient *
                 (hourgam[i][0] * hxx[0] + hourgam[i][1] * hxx[1] +
@@ -1173,7 +1162,6 @@ void CalcFBHourglassForceForElems( Domain &domain,
          Real_t fx_tmp = Real_t(0.0) ;
          Real_t fy_tmp = Real_t(0.0) ;
          Real_t fz_tmp = Real_t(0.0) ;
-#pragma unroll(4)
          for (Index_t i=0 ; i < count ; ++i) {
             Index_t ielem = cornerList[i] ;
             fx_tmp += fx_elem[ielem] ;
@@ -1245,7 +1233,6 @@ void CalcHourglassControlForElems(Domain& domain,
       CalcElemVolumeDerivative(pfx, pfy, pfz, x1, y1, z1);
 
       /* load into temporary storage for FB Hour Glass control */
-#pragma unroll(8)
       for(Index_t ii=0;ii<8;++ii){
          Index_t jj=8*i+ii;
 
@@ -1389,9 +1376,6 @@ static inline void CalcForceForNodes(Domain& domain)
    startApolloThread();
 #endif
 #pragma omp for
-#pragma unroll(4)
-#pragma clang loop vectorize_width(4)
-#pragma clang loop interleave_count(4)
   for (Index_t i=0; i<numNode; ++i) {
      domain.fx(i) = Real_t(0.0) ;
      domain.fy(i) = Real_t(0.0) ;
@@ -1485,21 +1469,18 @@ void ApplyAccelerationBoundaryConditionsForNodes(Domain& domain)
 #endif
       if (!domain.symmXempty() != 0) {
 #pragma omp for nowait firstprivate(numNodeBC)
-#pragma unroll(8)
          for(Index_t i=0 ; i<numNodeBC ; ++i)
             domain.xdd(domain.symmX(i)) = Real_t(0.0) ;
       }
 
       if (!domain.symmYempty() != 0) {
 #pragma omp for nowait firstprivate(numNodeBC)
-#pragma unroll(8)
          for(Index_t i=0 ; i<numNodeBC ; ++i)
             domain.ydd(domain.symmY(i)) = Real_t(0.0) ;
       }
 
       if (!domain.symmZempty() != 0) {
 #pragma omp for nowait firstprivate(numNodeBC)
-#pragma unroll(8)
          for(Index_t i=0 ; i<numNodeBC ; ++i)
             domain.zdd(domain.symmZ(i)) = Real_t(0.0) ;
       }
@@ -1582,7 +1563,6 @@ void CalcPositionForNodes(Domain &domain, const Real_t dt, Index_t numNode)
    startApolloThread();
 #endif
 #pragma omp for
-#pragma unroll(2)
    for ( Index_t i = 0 ; i < numNode ; ++i )
    {
      domain.x(i) += domain.xd(i) * dt ;
@@ -1966,7 +1946,6 @@ void CalcKinematicsForElems( Domain &domain,
                                              volume);
 
     // get nodal velocities from global array and copy into local arrays.
-#pragma unroll(8)
     for( Index_t lnode=0 ; lnode<8 ; ++lnode )
     {
       Index_t gnode = elemToNode[lnode];
@@ -1976,7 +1955,6 @@ void CalcKinematicsForElems( Domain &domain,
     }
 
     Real_t dt2 = Real_t(0.5) * deltaTime;
-#pragma unroll(8)
     for ( Index_t j=0 ; j<8 ; ++j )
     {
        x_local[j] -= dt2 * xd_local[j];
@@ -2558,9 +2536,6 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
    startApolloThread();
 #endif
 #pragma omp for
-#pragma unroll(4)
-#pragma clang loop vectorize_width(4)
-#pragma clang loop interleave_count(4)
    for (Index_t i = 0; i < length ; ++i) {
       Real_t c1s = Real_t(2.0)/Real_t(3.0) ;
       bvc[i] = c1s * (compression[i] + Real_t(1.));
@@ -2585,7 +2560,6 @@ void CalcPressureForElems(Real_t* p_new, Real_t* bvc,
    startApolloThread();
 #endif
 #pragma omp for
-#pragma unroll(2)
    for (Index_t i = 0 ; i < length ; ++i){
       Index_t ielem = regElemList[i];
       
@@ -2642,7 +2616,6 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
    startApolloThread();
 #endif
 #pragma omp for
-#pragma unroll(2)
    for (Index_t i = 0 ; i < length ; ++i) {
       e_new[i] = e_old[i] - Real_t(0.5) * delvc[i] * (p_old[i] + q_old[i])
          + Real_t(0.5) * work[i];
@@ -2721,7 +2694,6 @@ void CalcEnergyForElems(Real_t* p_new, Real_t* e_new, Real_t* q_new,
    startApolloThread();
 #endif
 #pragma omp for
-#pragma unroll(2)
    for (Index_t i = 0 ; i < length ; ++i) {
 
       e_new[i] += Real_t(0.5) * work[i];
@@ -2955,7 +2927,6 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
    startApolloThread();
 #endif
 #pragma omp for nowait firstprivate(numElemReg)
-#pragma unroll(2)
          for (Index_t i=0; i<numElemReg; ++i) {
             Index_t ielem = regElemList[i];
             e_old[i] = domain.e(ielem) ;
@@ -2967,7 +2938,6 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
          }
 
 #pragma omp for firstprivate(numElemReg)
-#pragma unroll(2)
          for (Index_t i = 0; i < numElemReg ; ++i) {
             Index_t ielem = regElemList[i];
             Real_t vchalf ;
@@ -2979,7 +2949,6 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
       /* Check for v > eosvmax or v < eosvmin */
          if ( eosvmin != Real_t(0.) ) {
 #pragma omp for nowait firstprivate(numElemReg, eosvmin)
-#pragma unroll(4)
             for(Index_t i=0 ; i<numElemReg ; ++i) {
                Index_t ielem = regElemList[i];
                if (vnewc[ielem] <= eosvmin) { /* impossible due to calling func? */
@@ -2989,7 +2958,6 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
          }
          if ( eosvmax != Real_t(0.) ) {
 #pragma omp for nowait firstprivate(numElemReg, eosvmax)
-#pragma unroll(4)
             for(Index_t i=0 ; i<numElemReg ; ++i) {
                Index_t ielem = regElemList[i];
                if (vnewc[ielem] >= eosvmax) { /* impossible due to calling func? */
@@ -3031,7 +2999,6 @@ void EvalEOSForElems(Domain& domain, Real_t *vnewc,
    startApolloThread();
 #endif
 #pragma omp for 
-#pragma unroll(4)
    for (Index_t i=0; i<numElemReg; ++i) {
       Index_t ielem = regElemList[i];
       domain.p(ielem) = p_new[i] ;
@@ -3098,9 +3065,6 @@ void ApplyMaterialPropertiesForElems(Domain& domain)
    startApolloThread();
 #endif
 #pragma omp for firstprivate(numElem)
-#pragma unroll(4)
-#pragma clang loop vectorize_width(4)
-#pragma clang loop interleave_count(4)
        for(Index_t i=0 ; i<numElem ; ++i) {
           vnewc[i] = domain.vnew(i) ;
        }
@@ -3108,9 +3072,6 @@ void ApplyMaterialPropertiesForElems(Domain& domain)
        // Bound the updated relative volumes with eosvmin/max
        if (eosvmin != Real_t(0.)) {
 #pragma omp for nowait firstprivate(numElem)
-#pragma unroll(2)
-#pragma clang loop vectorize_width(4)
-#pragma clang loop interleave_count(4)
           for(Index_t i=0 ; i<numElem ; ++i) {
              if (vnewc[i] < eosvmin)
                 vnewc[i] = eosvmin ;
@@ -3119,9 +3080,6 @@ void ApplyMaterialPropertiesForElems(Domain& domain)
 
        if (eosvmax != Real_t(0.)) {
 #pragma omp for nowait firstprivate(numElem)
-#pragma unroll(2)
-#pragma clang loop vectorize_width(4)
-#pragma clang loop interleave_count(4)
           for(Index_t i=0 ; i<numElem ; ++i) {
              if (vnewc[i] > eosvmax)
                 vnewc[i] = eosvmax ;
@@ -3204,9 +3162,6 @@ void UpdateVolumesForElems(Domain &domain,
    startApolloThread();
 #endif
 #pragma omp for
-#pragma unroll(4)
-#pragma clang loop vectorize_width(4)
-#pragma clang loop interleave_count(4)
       for(Index_t i=0 ; i<length ; ++i) {
          Real_t tmpV = domain.vnew(i) ;
 
@@ -3388,7 +3343,6 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
 #endif      
 
 #pragma omp for
-#pragma unroll(2)
       for (Index_t i = 0 ; i < length ; ++i) {
          Index_t indx = regElemlist[i] ;
 
