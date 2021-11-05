@@ -1,0 +1,3 @@
+
+
+echo $PROBLEM_SIZE
