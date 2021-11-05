@@ -14,7 +14,9 @@ function doprint {
 mylist=("VA" "PA")
 for ME in ${mylist[@]}; do
     doprint
-    if [ $ME == "VA" ]; then
+    if [ $ME == "VAca" ]; then
         echo "EQUAL!"
+    else
+        echo "UNEQUAL!"
     fi
 done

@@ -4,6 +4,8 @@ build/
 runlogs/
 runData/
 build*/
+preprocData/
+pythonAnalysis/runlogs/
 
 # Keep the gitignore file
 !.gitignore
