@@ -3,6 +3,7 @@
 build/
 runlogs/
 runData/
+build*/
 
 # Keep the gitignore file
 !.gitignore
