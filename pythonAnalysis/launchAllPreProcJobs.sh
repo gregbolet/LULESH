@@ -12,19 +12,22 @@ function launchJob {
 	--output="./runlogs/preproc-${APOLLO_TYPE}-${XPLR_POL}-${IMBAL}-${NUM_POLS}-${TREE_DEPTH}-${TRAIN_SIZE}.log" \
 	--open-mode=truncate \
 	--ntasks=1 \
-	--time=00:30:00 \
+	--time=02:00:00 \
 	--export=ALL \
-	--partition=pdebug \
-	./runAnalyScript.sh
+	./runPreProcScript.sh
+
+	#--partition=pdebug \
 
 	NUM_JOBS_LAUNCHED=$((NUM_JOBS_LAUNCHED+1))
 }
 
 # Let's go through all the desired combinations of test configurations
-pava=("VA_RegionMod" "PA_RegionMod" "PA_SingleMod" "NoApollo")
+#pava=("VA_RegionMod" "PA_RegionMod" "PA_SingleMod" "NoApollo")
+pava=("VA_RegionMod" "PA_RegionMod" "PA_SingleMod")
 				# "PA_MEMAWARE_RegionMod" "PA_MEMAWARE_SingleMod")
 explrPol=("Random" "RoundRobin")
-imbals=(0 8)
+#imbals=(0 8)
+imbals=(8)
 numPols=(3)
 treeDepths=(2 4)
 trainSizes=(30 55 80)
