@@ -6,6 +6,7 @@ runData/
 build*/
 preprocData/
 pythonAnalysis/runlogs/
+pythonAnalysis/.ipynb_checkpoints/
 
 # Keep the gitignore file
 !.gitignore
