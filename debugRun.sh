@@ -12,7 +12,7 @@ POLICY="RoundRobin"
 #POLICY="Load,dtree-latest-rank-0-lulesh.cc.apollo.region.l2388.yaml"
 #POLICY="Load"
 STORE_MODELS=0
-STORE_CSVS=0
+STORE_CSVS=1
 
 OMP_NUM_THREADS=$THREAD_CAP \
 OMP_WAIT_POLICY=$WAIT_POL \

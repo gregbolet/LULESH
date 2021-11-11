@@ -10,7 +10,7 @@ export ENABLE_PERF_CNTRS=1
 export PERF_CNTRS="PAPI_DP_OPS,PAPI_TOT_INS,PAPI_L3_TCM"
 export ENABLE_MLTPX=1
 export NUM_TRIALS=3
-export TRACE_CSV=1
+export TRACE_CSV=0
 export STORE_MODELS=1
 
 NUM_JOBS_LAUNCHED=0
@@ -53,10 +53,10 @@ function launchJob {
 
 # Lists of all the variables we can sweep through
 numPolicies=(3)
-treeDepths=(2 4)
+treeDepths=(4)
 luleshImbalance=(8)
 apolloType=("PA")
-trainSize=(30 55 80)
+trainSize=(80 55 30)
 policyExplore=("RoundRobin" "Random")
 
 for IMBAL in ${luleshImbalance[@]}; do
