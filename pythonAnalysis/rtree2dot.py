@@ -118,7 +118,7 @@ def main():
     fn = fs.getFirstTopLevelNode()
 
     dot = 'digraph G {' 
-    dot += parse(fn);
+    dot += parse_tree(0, fn);
     dot += '\n}'
 
     with open(args.output, 'w') as f:

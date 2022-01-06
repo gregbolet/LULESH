@@ -23,13 +23,14 @@ function launchJob {
 
 # Let's go through all the desired combinations of test configurations
 #pava=("VA_RegionMod" "PA_RegionMod" "PA_SingleMod" "NoApollo")
-pava=("VA_RegionMod" "PA_RegionMod" "PA_SingleMod")
-				# "PA_MEMAWARE_RegionMod" "PA_MEMAWARE_SingleMod")
+#pava=("VA_RegionMod" "PA_RegionMod" "PA_SingleMod")
+pava=("PA_MEMAWARE_RegionMod" "PA_MEMAWARE_SingleMod")
 explrPol=("Random" "RoundRobin")
 #imbals=(0 8)
 imbals=(8)
 numPols=(3)
-treeDepths=(2 4)
+#treeDepths=(2 4)
+treeDepths=(4)
 trainSizes=(30 55 80)
 
 for APOLLO_TYPE in ${pava[@]}; do

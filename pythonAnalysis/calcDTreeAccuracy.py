@@ -274,38 +274,72 @@ def compute_acc_for_dtrees(oracle, dtreeDir):
 def compute_acc_for_traces(oracle, traceDir):
 
     print('=== Reading in CSVs in dir', traceDir)
-    trace_map = {}
 
-    t = time.perf_counter()
     # Only grab the CSV trace files
     tracefiles = list(glob.glob('%s/*lulesh.cc.apollo*.csv' % (traceDir)))
+    tracefiles.sort()
+
+    # This will store the summary data about each region that we examine
+    region_map = {}
 
     for csvFile in tracefiles:
+        #print('raw file name:', csvFile)
+        t = time.perf_counter()
         # Extract the region name from the trace file name
         idx = csvFile.find('lulesh.cc.apollo')
         endIdx = csvFile.find('-rank-0.csv')
-        regName = yamlFile[idx:endIdx]
-        print(regName)
+        regName = csvFile[idx:endIdx]
+        print('Working on region:[' + str(regName)+']')
 
         data = pd.read_csv(csvFile, sep=' ', header=0)
-        #print('Tree maxDepth', tree.getMaxDepth())
-        #print('Tree maxCatgeories', tree.getMaxCategories())
-        #print('Tree varcount', tree.getVarCount())
-        #print('')
+        #print(oracle['region'].unique().tolist())
+        # reset the index to line up traces
+        regionData = oracle.loc[oracle['region'] == regName].copy().reset_index()
 
-        # Map the region name to the tree
-        trace_map[regName] = data
+        #print(data.shape[0], regionData.shape[0])
+        assert data.shape[0] == regionData.shape[0]
 
-        #if tree.getVarCount() == 1:
-        #    a,b = tree.predict(np.array([[27000],[200]]).astype('float32'))
-        #    print(a,b)
+        # Select only the traces executed with the model,
+        # exclude the training samples
+        #data = data.loc[data['training'] == 'DecisionTree']
+        #regionData = regionData.iloc[data.index]
+        #assert data.shape[0] == regionData.shape[0]
 
-    elapsed_time = time.perf_counter() - t
-    print('=== Read in CSV trace files in', int(elapsed_time), 'second(s)')
+        regionData['isCorrectPred'] = False
 
-    # Now let's go through each CSV file and see whether the oracle
-    # considers them correct.
-    
+        #print(regionData.head(10)['policy'])
+        #print(data.head(10))
+
+        # Now let's compare the policy columns of both
+        regionData['isCorrectPred'] = (data['policy'] == regionData['policy'])
+        #print(regionData.head(10))
+
+        mispreds = regionData.loc[regionData['isCorrectPred'] == False]
+        corpreds = regionData.loc[regionData['isCorrectPred'] == True]
+
+        totalXTime = regionData['xtime'].sum()
+        mispredXTime = mispreds['xtime'].sum()
+        corpredXTime = corpreds['xtime'].sum()
+
+        acc = corpredXTime/totalXTime
+
+        region_map[regName] = [totalXTime, mispredXTime, corpredXTime]
+        elapsed_time = time.perf_counter() - t
+
+        print('=== Region (Optimal) Exec Time:', totalXTime, 'seconds')
+        print('=== Region Accuracy:', acc)
+        print('=== Processed region', regName, 'in', int(elapsed_time), 'second(s)')
+
+    summaryData = np.array(list(region_map.values()))
+    #print(summaryData)
+
+    totalXTime   = summaryData[:,0].sum()
+    mispredXTime = summaryData[:,1].sum()
+    corpredXTime = summaryData[:,2].sum()
+
+    acc = corpredXTime/totalXTime
+    print('=== Total (Optimal) Exec Time:', totalXTime, 'seconds')
+    print('=== Accuracy:', acc)
 
     return
 
@@ -329,7 +363,7 @@ def main():
     t = time.perf_counter()
 
     # Read in the Oracle dataset
-    #oracle = pd.read_csv(args.oracleFile, sep=' ', header=0, nrows=20)
+    #oracle = pd.read_csv(args.oracleFile, sep=' ', header=0, nrows=1000)
     oracle = pd.read_csv(args.oracleFile, sep=' ', header=0)
 
     elapsed_time = time.perf_counter() - t
@@ -338,10 +372,12 @@ def main():
 
 
     if args.dtreeDir != None:
+        print('dtreeDir activated!')
         compute_acc_for_dtrees(oracle, args.dtreeDir)
 
     if args.csvTraceDir != None:
-
+        print('csvTrace activated!')
+        compute_acc_for_traces(oracle, args.csvTraceDir)
 
     return
 

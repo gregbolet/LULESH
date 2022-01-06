@@ -1,0 +1,176 @@
+digraph G {tree_0_d_0_n_0 [ label="{
+depth: 0,
+value: 1.000000,
+norm_class_idx: 0,
+splits: [ {
+var: 0,
+quality: 75.374222,
+le: 3511.000000,
+ }
+ ]
+,
+ }
+" ];
+tree_0_d_1_n_1 [ label="{
+depth: 1,
+value: 2.000000,
+norm_class_idx: 1,
+splits: [ {
+var: 0,
+quality: 24.285715,
+le: 3025.000000,
+ }
+ ]
+,
+ }
+" ];
+tree_0_d_2_n_2 [ label="{
+depth: 2,
+value: 2.000000,
+norm_class_idx: 1,
+ }
+" ];
+tree_0_d_2_n_3 [ label="{
+depth: 2,
+value: 2.000000,
+norm_class_idx: 1,
+splits: [ {
+var: 0,
+quality: 7.000000,
+le: 3163.000000,
+ }
+ ]
+,
+ }
+" ];
+tree_0_d_3_n_4 [ label="{
+depth: 3,
+value: 1.000000,
+norm_class_idx: 0,
+ }
+" ];
+tree_0_d_3_n_5 [ label="{
+depth: 3,
+value: 2.000000,
+norm_class_idx: 1,
+ }
+" ];
+tree_0_d_1_n_6 [ label="{
+depth: 1,
+value: 1.000000,
+norm_class_idx: 0,
+splits: [ {
+var: 0,
+quality: 55.025925,
+le: 4689.500000,
+ }
+ ]
+,
+ }
+" ];
+tree_0_d_2_n_7 [ label="{
+depth: 2,
+value: 1.000000,
+norm_class_idx: 0,
+splits: [ {
+var: 0,
+quality: 10.736842,
+le: 4608.000000,
+ }
+ ]
+,
+ }
+" ];
+tree_0_d_3_n_8 [ label="{
+depth: 3,
+value: 1.000000,
+norm_class_idx: 0,
+splits: [ {
+var: 0,
+quality: 10.529411,
+le: 4540.500000,
+ }
+ ]
+,
+ }
+" ];
+tree_0_d_4_n_9 [ label="{
+depth: 4,
+value: 1.000000,
+norm_class_idx: 0,
+ }
+" ];
+tree_0_d_4_n_10 [ label="{
+depth: 4,
+value: 1.000000,
+norm_class_idx: 0,
+ }
+" ];
+tree_0_d_3_n_11 [ label="{
+depth: 3,
+value: 2.000000,
+norm_class_idx: 1,
+ }
+" ];
+tree_0_d_2_n_12 [ label="{
+depth: 2,
+value: 1.000000,
+norm_class_idx: 0,
+splits: [ {
+var: 0,
+quality: 45.388889,
+le: 7065.000000,
+ }
+ ]
+,
+ }
+" ];
+tree_0_d_3_n_13 [ label="{
+depth: 3,
+value: 1.000000,
+norm_class_idx: 0,
+splits: [ {
+var: 0,
+quality: 28.914286,
+le: 7002.000000,
+ }
+ ]
+,
+ }
+" ];
+tree_0_d_4_n_14 [ label="{
+depth: 4,
+value: 1.000000,
+norm_class_idx: 0,
+ }
+" ];
+tree_0_d_4_n_15 [ label="{
+depth: 4,
+value: 2.000000,
+norm_class_idx: 1,
+ }
+" ];
+tree_0_d_3_n_16 [ label="{
+depth: 3,
+value: 1.000000,
+norm_class_idx: 0,
+ }
+" ];
+tree_0_d_0_n_0 -> tree_0_d_1_n_1;
+tree_0_d_1_n_1 -> tree_0_d_2_n_2;
+tree_0_d_1_n_1 -> tree_0_d_2_n_3;
+tree_0_d_2_n_3 -> tree_0_d_3_n_4;
+tree_0_d_2_n_3 -> tree_0_d_3_n_5;
+tree_0_d_0_n_0 -> tree_0_d_1_n_6;
+tree_0_d_1_n_6 -> tree_0_d_2_n_7;
+tree_0_d_2_n_7 -> tree_0_d_3_n_8;
+tree_0_d_3_n_8 -> tree_0_d_4_n_9;
+tree_0_d_3_n_8 -> tree_0_d_4_n_10;
+tree_0_d_2_n_7 -> tree_0_d_3_n_11;
+tree_0_d_1_n_6 -> tree_0_d_2_n_12;
+tree_0_d_2_n_12 -> tree_0_d_3_n_13;
+tree_0_d_3_n_13 -> tree_0_d_4_n_14;
+tree_0_d_3_n_13 -> tree_0_d_4_n_15;
+tree_0_d_2_n_12 -> tree_0_d_3_n_16;
+
+}

@@ -10,7 +10,7 @@ export ENABLE_PERF_CNTRS=1
 export PERF_CNTRS="PAPI_DP_OPS,PAPI_TOT_INS,PAPI_L3_TCM"
 export ENABLE_MLTPX=1
 export NUM_TRIALS=3
-export TRACE_CSV=0
+export TRACE_CSV=1
 export STORE_MODELS=1
 
 NUM_JOBS_LAUNCHED=0
@@ -40,7 +40,7 @@ function launchJob {
 	--output="./runlogs/${DATA_DIR_NAME}.log" \
 	--open-mode=truncate \
 	--ntasks=1 \
-	--time=03:00:00 \
+	--time=04:00:00 \
 	--export=ALL \
 	./problemSizeSweep.sh
 

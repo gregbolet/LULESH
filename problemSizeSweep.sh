@@ -87,7 +87,7 @@ function doRunWithYAML {
 
 # Don't store yaml
 # Comment this out when doing full TRACE_CSV runs
-STORE_MODELS=0
+#STORE_MODELS=0
 
 # This will open up each region's respective model for testing
 # If we did region training, all the models will be different
