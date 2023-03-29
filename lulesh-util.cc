@@ -219,7 +219,7 @@ void VerifyAndWriteFinalOutput(Real_t elapsed_time,
 
    // Timing information
    std::cout.unsetf(std::ios_base::floatfield);
-   std::cout << std::setprecision(2);
+   std::cout << std::setprecision(8);
    std::cout << "\nElapsed time         = " << std::setw(10) << elapsed_time << " (s)\n";
    std::cout << std::setprecision(8);
    std::cout << "Grind time (us/z/c)  = "  << std::setw(10) << grindTime1 << " (per dom)  ("
