@@ -2450,7 +2450,8 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
                                    Real_t qqc, Real_t& dtcourant)
 {
 #if _OPENMP
-   const Index_t threads = omp_get_max_threads();
+   //const Index_t threads = omp_get_max_threads();
+   Index_t threads = omp_get_max_threads();
    Index_t courant_elem_per_thread[threads];
    Real_t dtcourant_per_thread[threads];
 #else
@@ -2464,6 +2465,14 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
       Real_t   qqc2 = Real_t(64.0) * qqc * qqc ;
       Real_t   dtcourant_tmp = dtcourant;
       Index_t  courant_elem  = -1 ;
+
+      // This is a fix to make Lulesh work well with Apollo
+#if _OPENMP
+      #pragma omp single
+      {
+         threads = omp_get_num_threads();
+      }
+#endif
 
 #if _OPENMP
       Index_t thread_num = omp_get_thread_num();
@@ -2495,6 +2504,7 @@ void CalcCourantConstraintForElems(Domain &domain, Index_t length,
 
       dtcourant_per_thread[thread_num]    = dtcourant_tmp ;
       courant_elem_per_thread[thread_num] = courant_elem ;
+
    }
 
    for (Index_t i = 1; i < threads; ++i) {
@@ -2519,7 +2529,8 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
                                  Index_t *regElemlist, Real_t dvovmax, Real_t& dthydro)
 {
 #if _OPENMP
-   const Index_t threads = omp_get_max_threads();
+   //const Index_t threads = omp_get_max_threads();
+   Index_t threads = omp_get_max_threads();
    Index_t hydro_elem_per_thread[threads];
    Real_t dthydro_per_thread[threads];
 #else
@@ -2532,6 +2543,14 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
    {
       Real_t dthydro_tmp = dthydro ;
       Index_t hydro_elem = -1 ;
+
+      // This is a fix to make Lulesh work well with Apollo
+#if _OPENMP
+      #pragma omp single
+      {
+         threads = omp_get_num_threads();
+      }
+#endif
 
 #if _OPENMP
       Index_t thread_num = omp_get_thread_num();
@@ -2555,6 +2574,7 @@ void CalcHydroConstraintForElems(Domain &domain, Index_t length,
 
       dthydro_per_thread[thread_num]    = dthydro_tmp ;
       hydro_elem_per_thread[thread_num] = hydro_elem ;
+
    }
 
    for (Index_t i = 1; i < threads; ++i) {
